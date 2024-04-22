@@ -1,0 +1,9 @@
+# macOS specific files
+.DS_Store
+
+# executable
+gobrew
+
+# result files & data
+core_formulas.txt
+./formulas/
