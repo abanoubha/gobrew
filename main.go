@@ -8,10 +8,10 @@ import (
 )
 
 func main() {
-	coreFormulasFile := "core_formula.txt"
+	coreFormulasFile := "core_formulas.txt"
 
 	if fileDoNotExist(coreFormulasFile) {
-		getCoreFormulas()
+		getCoreFormulas(coreFormulasFile)
 	}
 }
 
@@ -29,7 +29,7 @@ func fileDoNotExist(fileName string) bool {
 	return false // the file exists
 }
 
-func getCoreFormulas() {
+func getCoreFormulas(fileName string) {
 	resp, err := http.Get("https://formulae.brew.sh/api/formula.json")
 
 	if err != nil {
@@ -45,7 +45,7 @@ func getCoreFormulas() {
 	//	return
 	//}
 
-	outFile, err := os.Create("core_formulas.txt")
+	outFile, err := os.Create(fileName)
 
 	if err != nil {
 		fmt.Println("Error creating file: ", err.Error())
@@ -61,5 +61,5 @@ func getCoreFormulas() {
 		return
 	}
 
-	fmt.Println("successfully written JSON data into core_formulas.txt")
+	fmt.Println("successfully written JSON data into ", fileName)
 }
