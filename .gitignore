@@ -5,5 +5,5 @@
 gobrew
 
 # result files & data
-core_formulas.txt
-./formulas/
+core_formulas.json
+formulas
