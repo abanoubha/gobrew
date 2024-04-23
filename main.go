@@ -21,7 +21,9 @@ func main() {
 	}
 
 	for _, f := range formulas_list {
-		getFormulaInfo(f)
+		if fileDoNotExist("./formulas/" + f + ".json") {
+			getFormulaInfo(f)
+		}
 	}
 }
 
