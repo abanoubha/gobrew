@@ -61,6 +61,9 @@ $ gobrew
 
 $ gobrew -l rust
 524
+
+$ gobrew -l llvm
+30
 ```
 
 ## tasks
