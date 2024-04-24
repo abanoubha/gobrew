@@ -20,11 +20,13 @@ func main() {
 		fmt.Println("Error getting formulas list: ", err)
 	}
 
-	for _, f := range formulas_list {
-		if fileDoNotExist("./formulas/" + f + ".json") {
-			getFormulaInfo(f)
-		}
-	}
+	fmt.Println(len(formulas_list))
+
+	// for _, f := range formulas_list {
+	// 	if fileDoNotExist("./formulas/" + f + ".json") {
+	// 		getFormulaInfo(f)
+	// 	}
+	// }
 }
 
 type Formula struct {
@@ -52,14 +54,14 @@ type Formula struct {
 	TestDependencies        []string               `json:"test_dependencies"`        // most important
 	RecommendedDependencies []string               `json:"recommended_dependencies"` // most important
 	OptionalDependencies    []string               `json:"optional_dependencies"`    // most important
-	UsesFromMacos           []string               `json:"uses_from_macos"`          // most important
-	UsesFromMacosBounds     []string               `json:"uses_from_macos_bounds"`   // most important
-	Requirements            []string               `json:"requirements"`             // most important
+	UsesFromMacos           interface{}            `json:"uses_from_macos"`          // most important
+	UsesFromMacosBounds     interface{}            `json:"uses_from_macos_bounds"`   // most important
+	Requirements            interface{}            `json:"requirements"`             // most important
 	ConflictsWith           []string               `json:"conflicts_with"`           // most important
 	ConflictsWithReasons    []string               `json:"conflicts_with_reasons"`   // most important
 	LinkOverwrite           []string               `json:"link_overwrite"`           // most important
 	Caveats                 interface{}            `json:"caveats"`
-	Installed               []string               `json:"installed"`
+	Installed               interface{}            `json:"installed"`
 	LinkedKeg               interface{}            `json:"linked_keg"`
 	Pinned                  bool                   `json:"pinned"`
 	Outdated                bool                   `json:"outdated"`
@@ -73,27 +75,33 @@ type Formula struct {
 	Service                 interface{}            `json:"service"`
 	TapGitHead              string                 `json:"tap_git_head"`
 	RubySourcePath          string                 `json:"ruby_source_path"`
-	RubySourceChecksum      []string               `json:"ruby_source_checksum"`
-	Variations              []string               `json:"variations"`
+	RubySourceChecksum      interface{}            `json:"ruby_source_checksum"`
+	Variations              interface{}            `json:"variations"`
 }
 
 func getFormulasFromFile(fileName string) ([]string, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-		return []string{}, err
+		return nil, err
 	}
 
 	var formulas []Formula
 	err = json.Unmarshal(data, &formulas)
 	if err != nil {
 		fmt.Println("Error parsing JSON: ", err)
-		return []string{}, err
+		return nil, err
 	}
 
 	var allFormulas []string
 	for _, formula := range formulas {
-		allFormulas = append(allFormulas, formula.Name)
+		if len(formula.BuildDependencies) > 0 {
+			for _, dep := range formula.BuildDependencies {
+				if dep == "go" {
+					allFormulas = append(allFormulas, formula.Name)
+				}
+			}
+		}
 	}
 
 	return allFormulas, nil
