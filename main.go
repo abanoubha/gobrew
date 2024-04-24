@@ -9,7 +9,7 @@ import (
 	"slices"
 )
 
-// gobrew [-l|--lang]=go
+// gobrew [-l|--lang] go
 func main() {
 	lang := "go" // get count of packags written in "go" language
 
