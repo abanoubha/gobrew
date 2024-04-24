@@ -55,7 +55,7 @@ type Formula struct {
 	Name                    string                 `json:"name"`
 	FullName                string                 `json:"full_name"`
 	Tap                     string                 `json:"tap"`
-	Oldname                 interface{}            `json:"oldname"` // Can be null
+	Oldname                 interface{}            `json:"oldname"`
 	Oldnames                []string               `json:"oldnames"`
 	Aliases                 []string               `json:"aliases"`
 	VersionedFormulae       []string               `json:"versioned_formulae"`
@@ -72,16 +72,16 @@ type Formula struct {
 	KegOnlyReason           interface{}            `json:"keg_only_reason"`
 	Options                 []string               `json:"options"`
 	BuildDependencies       []string               `json:"build_dependencies"`
-	Dependencies            []string               `json:"dependencies"`             // most important
-	TestDependencies        []string               `json:"test_dependencies"`        // most important
-	RecommendedDependencies []string               `json:"recommended_dependencies"` // most important
-	OptionalDependencies    []string               `json:"optional_dependencies"`    // most important
-	UsesFromMacos           interface{}            `json:"uses_from_macos"`          // most important
-	UsesFromMacosBounds     interface{}            `json:"uses_from_macos_bounds"`   // most important
-	Requirements            interface{}            `json:"requirements"`             // most important
-	ConflictsWith           []string               `json:"conflicts_with"`           // most important
-	ConflictsWithReasons    []string               `json:"conflicts_with_reasons"`   // most important
-	LinkOverwrite           []string               `json:"link_overwrite"`           // most important
+	Dependencies            []string               `json:"dependencies"`
+	TestDependencies        []string               `json:"test_dependencies"`
+	RecommendedDependencies []string               `json:"recommended_dependencies"`
+	OptionalDependencies    []string               `json:"optional_dependencies"`
+	UsesFromMacos           interface{}            `json:"uses_from_macos"`
+	UsesFromMacosBounds     interface{}            `json:"uses_from_macos_bounds"`
+	Requirements            interface{}            `json:"requirements"`
+	ConflictsWith           []string               `json:"conflicts_with"`
+	ConflictsWithReasons    []string               `json:"conflicts_with_reasons"`
+	LinkOverwrite           []string               `json:"link_overwrite"`
 	Caveats                 interface{}            `json:"caveats"`
 	Installed               interface{}            `json:"installed"`
 	LinkedKeg               interface{}            `json:"linked_keg"`
@@ -117,6 +117,7 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 
 	var allFormulas []string
 	for _, formula := range formulas {
+		// BuildDependencies
 		if len(formula.BuildDependencies) > 0 {
 			for _, dep := range formula.BuildDependencies {
 				if dep == langName {
@@ -124,6 +125,39 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 				}
 			}
 		}
+		// Dependencies
+		if len(formula.Dependencies) > 0 {
+			for _, dep := range formula.Dependencies {
+				if dep == langName {
+					allFormulas = append(allFormulas, formula.Name)
+				}
+			}
+		}
+		// TestDependencies
+		if len(formula.TestDependencies) > 0 {
+			for _, dep := range formula.TestDependencies {
+				if dep == langName {
+					allFormulas = append(allFormulas, formula.Name)
+				}
+			}
+		}
+		// RecommendedDependencies
+		if len(formula.RecommendedDependencies) > 0 {
+			for _, dep := range formula.RecommendedDependencies {
+				if dep == langName {
+					allFormulas = append(allFormulas, formula.Name)
+				}
+			}
+		}
+		// OptionalDependencies
+		if len(formula.OptionalDependencies) > 0 {
+			for _, dep := range formula.OptionalDependencies {
+				if dep == langName {
+					allFormulas = append(allFormulas, formula.Name)
+				}
+			}
+		}
+		// TODO: Requirements
 	}
 
 	return allFormulas, nil
