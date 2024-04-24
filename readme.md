@@ -49,3 +49,8 @@ $ go mod tidy && go build -o gobrew main.go && ./gobrew -l python@3.12
 - [x] get each package JSON file
 - [x] get count of packages which are written/built in Go language
 - [x] ability to set the language or build system
+- [x] include **dependencies** in calculation
+- [x] include **build dependencies** in calculation
+- [x] include **test dependencies** in calculation
+- [x] include **recommended dependencies** in calculation
+- [x] include **optional dependencies** in calculation
