@@ -12,4 +12,5 @@ go mod tidy && go build -o gobrew main.go && ./gobrew
 
 - [x] get all Homebrew Core formulas
 - [x] save core_formulas as a file onto the disk
-- [ ] get each package JSON file
+- [x] get each package JSON file
+- [x] get count of packages which are written/built in Go language
