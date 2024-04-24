@@ -64,6 +64,9 @@ $ gobrew -l rust
 
 $ gobrew -l llvm
 30
+
+$ ./gobrew -l zig
+6
 ```
 
 ## tasks
