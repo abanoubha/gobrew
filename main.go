@@ -27,6 +27,8 @@ func main() {
 			fmt.Printf("The language is more than 20 characters long! which is weird! : language=%v\n", os.Args[2])
 			return
 		}
+	} else if len(os.Args) > 1 {
+		fmt.Println("The language is not set. We'll count packages built in Go (by default).")
 	}
 
 	coreFormulasFile := "core_formulas.json"
