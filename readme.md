@@ -35,6 +35,9 @@ $ go mod tidy && go build -o gobrew main.go && ./gobrew -l gcc
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l cmake
 1005
 
+$ go mod tidy && go build -o gobrew main.go && ./gobrew --lang meson
+213
+
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l ruby
 2
 
