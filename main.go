@@ -6,13 +6,21 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"slices"
 )
 
 // gobrew [-l|--lang]=go
 func main() {
 	lang := "go" // get count of packags written in "go" language
 
-	if len(os.Args) > 1 {
+	if len(os.Args) > 2 {
+		allowedArgs := []string{"-l", "--lang"}
+
+		if !slices.Contains(allowedArgs, os.Args[1]) {
+			fmt.Printf("The argument (%v) is not supported.\n\nHere is how to use gobrew.\n  gobrew\n  gobrew -l rust\n  gobrew --lang cmake", os.Args[1])
+			return
+		}
+
 		if len(os.Args[2]) < 20 {
 			lang = os.Args[2]
 		} else {
