@@ -24,7 +24,7 @@ func main() {
 		if len(os.Args[2]) < 20 {
 			lang = os.Args[2]
 		} else {
-			println("The language is more than characters long! which is weird! : language=", os.Args[2])
+			fmt.Printf("The language is more than 20 characters long! which is weird! : language=%v\n", os.Args[2])
 			return
 		}
 	}
@@ -129,37 +129,37 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 	return allFormulas, nil
 }
 
-func getFormulaInfo(f string) {
-	filePath := "./formulas/" + f + ".json"
-	url := "https://formulae.brew.sh/api/formula/" + f + ".json"
+// func getFormulaInfo(f string) {
+// 	filePath := "./formulas/" + f + ".json"
+// 	url := "https://formulae.brew.sh/api/formula/" + f + ".json"
 
-	resp, err := http.Get(url)
+// 	resp, err := http.Get(url)
 
-	if err != nil {
-		fmt.Println("Error: can not reach API endpoint", err.Error())
-		return
-	}
+// 	if err != nil {
+// 		fmt.Println("Error: can not reach API endpoint", err.Error())
+// 		return
+// 	}
 
-	defer resp.Body.Close()
+// 	defer resp.Body.Close()
 
-	outFile, err := os.Create(filePath)
+// 	outFile, err := os.Create(filePath)
 
-	if err != nil {
-		fmt.Println("Error creating file: ", err.Error())
-		return
-	}
+// 	if err != nil {
+// 		fmt.Println("Error creating file: ", err.Error())
+// 		return
+// 	}
 
-	defer outFile.Close()
+// 	defer outFile.Close()
 
-	_, err = io.Copy(outFile, resp.Body)
+// 	_, err = io.Copy(outFile, resp.Body)
 
-	if err != nil {
-		fmt.Println("Error writing to a file: ", err.Error())
-		return
-	}
+// 	if err != nil {
+// 		fmt.Println("Error writing to a file: ", err.Error())
+// 		return
+// 	}
 
-	fmt.Println("successfully written JSON data into ", filePath)
-}
+// 	fmt.Println("successfully written JSON data into ", filePath)
+// }
 
 func fileDoNotExist(fileName string) bool {
 	_, err := os.Open(fileName)
