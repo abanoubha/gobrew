@@ -8,19 +8,33 @@ import (
 	"os"
 )
 
+// gobrew [-l|--lang]=go
 func main() {
+	lang := "go" // get count of packags written in "go" language
+
+	if len(os.Args) > 1 {
+		if len(os.Args[2]) < 10 {
+			lang = os.Args[2]
+		} else {
+			println("The language is more than characters long! which is weird! : language=", os.Args[2])
+			return
+		}
+	}
+
 	coreFormulasFile := "core_formulas.json"
 
 	if fileDoNotExist(coreFormulasFile) {
 		getCoreFormulas(coreFormulasFile)
 	}
 
-	formulas_list, err := getFormulasFromFile(coreFormulasFile)
+	formulas_list, err := getFormulasFromFile(coreFormulasFile, lang)
 	if err != nil {
 		fmt.Println("Error getting formulas list: ", err)
 	}
 
-	fmt.Println(len(formulas_list))
+	pkgCount := len(formulas_list)
+
+	fmt.Println(pkgCount)
 
 	// for _, f := range formulas_list {
 	// 	if fileDoNotExist("./formulas/" + f + ".json") {
@@ -79,7 +93,7 @@ type Formula struct {
 	Variations              interface{}            `json:"variations"`
 }
 
-func getFormulasFromFile(fileName string) ([]string, error) {
+func getFormulasFromFile(fileName, langName string) ([]string, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
@@ -97,7 +111,7 @@ func getFormulasFromFile(fileName string) ([]string, error) {
 	for _, formula := range formulas {
 		if len(formula.BuildDependencies) > 0 {
 			for _, dep := range formula.BuildDependencies {
-				if dep == "go" {
+				if dep == langName {
 					allFormulas = append(allFormulas, formula.Name)
 				}
 			}
