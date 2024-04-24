@@ -37,6 +37,9 @@ $ go mod tidy && go build -o gobrew main.go && ./gobrew -l swig
 
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l lua
 6
+
+$ go mod tidy && go build -o gobrew main.go && ./gobrew -l python@3.12
+122
 ```
 
 ## tasks
