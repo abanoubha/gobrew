@@ -13,7 +13,7 @@ func main() {
 	lang := "go" // get count of packags written in "go" language
 
 	if len(os.Args) > 1 {
-		if len(os.Args[2]) < 10 {
+		if len(os.Args[2]) < 20 {
 			lang = os.Args[2]
 		} else {
 			println("The language is more than characters long! which is weird! : language=", os.Args[2])
