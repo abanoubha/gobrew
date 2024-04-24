@@ -14,13 +14,13 @@ Too many curious questions I wanted to answer them using *realworld statistics*.
 # get deps, build, run
 # will show the count of packages written in Go in Homebrew Core (by default)
 $ go mod tidy && go build -o gobrew main.go && ./gobrew
-938
+957
 
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l go
-938
+957
 
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l rust
-522
+524
 
 # get the packages built with "ninja" build system
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l ninja
@@ -49,6 +49,18 @@ $ go mod tidy && go build -o gobrew main.go && ./gobrew -l lua
 
 $ go mod tidy && go build -o gobrew main.go && ./gobrew -l python@3.12
 122
+
+$ ./gobrew
+957
+
+$ ./gobrew -l rust
+524
+
+$ gobrew
+957
+
+$ gobrew -l rust
+524
 ```
 
 ## tasks
