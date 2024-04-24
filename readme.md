@@ -1,6 +1,6 @@
 # gobrew
 
-Count all programs written in Go and distributed via Homebrew.
+Count all programs written/built in Go/Rust/Python/.. and distributed via Homebrew.
 
 ## commands
 
