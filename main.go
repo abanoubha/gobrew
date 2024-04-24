@@ -17,7 +17,7 @@ func main() {
 		allowedArgs := []string{"-l", "--lang"}
 
 		if !slices.Contains(allowedArgs, os.Args[1]) {
-			fmt.Printf("The argument (%v) is not supported.\n\nHere is how to use gobrew.\n  gobrew\n  gobrew -l rust\n  gobrew --lang cmake", os.Args[1])
+			fmt.Printf("The argument (%v) is not supported.\n\nHere is how to use gobrew.\n  gobrew\n  gobrew -l rust\n  gobrew --lang cmake\n", os.Args[1])
 			return
 		}
 
