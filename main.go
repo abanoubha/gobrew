@@ -101,7 +101,7 @@ type Formula struct {
 	Variations              interface{}            `json:"variations"`
 }
 
-func getFormulasFromFile(fileName, langName string) ([]string, error) {
+func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
@@ -115,13 +115,14 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 		return nil, err
 	}
 
-	var allFormulas []string
+	allFormulas := map[interface{}]struct{}{}
+
 	for _, formula := range formulas {
 		// BuildDependencies
 		if len(formula.BuildDependencies) > 0 {
 			for _, dep := range formula.BuildDependencies {
 				if dep == langName {
-					allFormulas = append(allFormulas, formula.Name)
+					allFormulas[formula.Name] = struct{}{}
 				}
 			}
 		}
@@ -129,7 +130,7 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 		if len(formula.Dependencies) > 0 {
 			for _, dep := range formula.Dependencies {
 				if dep == langName {
-					allFormulas = append(allFormulas, formula.Name)
+					allFormulas[formula.Name] = struct{}{}
 				}
 			}
 		}
@@ -137,7 +138,7 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 		if len(formula.TestDependencies) > 0 {
 			for _, dep := range formula.TestDependencies {
 				if dep == langName {
-					allFormulas = append(allFormulas, formula.Name)
+					allFormulas[formula.Name] = struct{}{}
 				}
 			}
 		}
@@ -145,7 +146,7 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 		if len(formula.RecommendedDependencies) > 0 {
 			for _, dep := range formula.RecommendedDependencies {
 				if dep == langName {
-					allFormulas = append(allFormulas, formula.Name)
+					allFormulas[formula.Name] = struct{}{}
 				}
 			}
 		}
@@ -153,7 +154,7 @@ func getFormulasFromFile(fileName, langName string) ([]string, error) {
 		if len(formula.OptionalDependencies) > 0 {
 			for _, dep := range formula.OptionalDependencies {
 				if dep == langName {
-					allFormulas = append(allFormulas, formula.Name)
+					allFormulas[formula.Name] = struct{}{}
 				}
 			}
 		}
