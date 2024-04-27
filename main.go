@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -138,10 +139,13 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 	allFormulas := map[interface{}]struct{}{}
 
 	for _, formula := range formulas {
+
+		langAt := langName + "@"
+
 		// BuildDependencies
 		if len(formula.BuildDependencies) > 0 {
 			for _, dep := range formula.BuildDependencies {
-				if dep == langName {
+				if dep == langName || strings.HasPrefix(dep, langAt) {
 					allFormulas[formula.Name] = struct{}{}
 				}
 			}
@@ -149,7 +153,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		// Dependencies
 		if len(formula.Dependencies) > 0 {
 			for _, dep := range formula.Dependencies {
-				if dep == langName {
+				if dep == langName || strings.HasPrefix(dep, langAt) {
 					allFormulas[formula.Name] = struct{}{}
 				}
 			}
@@ -157,7 +161,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		// TestDependencies
 		if len(formula.TestDependencies) > 0 {
 			for _, dep := range formula.TestDependencies {
-				if dep == langName {
+				if dep == langName || strings.HasPrefix(dep, langAt) {
 					allFormulas[formula.Name] = struct{}{}
 				}
 			}
@@ -165,7 +169,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		// RecommendedDependencies
 		if len(formula.RecommendedDependencies) > 0 {
 			for _, dep := range formula.RecommendedDependencies {
-				if dep == langName {
+				if dep == langName || strings.HasPrefix(dep, langAt) {
 					allFormulas[formula.Name] = struct{}{}
 				}
 			}
@@ -173,7 +177,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		// OptionalDependencies
 		if len(formula.OptionalDependencies) > 0 {
 			for _, dep := range formula.OptionalDependencies {
-				if dep == langName {
+				if dep == langName || strings.HasPrefix(dep, langAt) {
 					allFormulas[formula.Name] = struct{}{}
 				}
 			}
