@@ -2,11 +2,13 @@
 
 Count all programs written/built in Go/Rust/Python/.. and distributed via Homebrew.
 
-## why I build this?
+## why I built this?
 
 I was curious. Are people *actually* using Go more than Rust? Are there more software written with cmake or meson or ninja .. ?
 
 Too many curious questions I wanted to answer them using *realworld statistics*.
+
+I wrote a post about my findings regarding [Go vs Rust usage in Homebrew Core formulae on my website](https://abanoubhanna.com/posts/go-vs-rust-use-production/).
 
 ## commands
 
