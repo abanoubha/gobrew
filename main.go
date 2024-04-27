@@ -214,7 +214,7 @@ func getAllBuildDeps(fileName string) error {
 
 	allBuildDeps := getKeysAsString(buildDeps)
 
-	fmt.Println(allBuildDeps)
+	fmt.Println("All Build Dependencies Count: ", len(allBuildDeps), "\n", allBuildDeps)
 	return nil
 }
 
