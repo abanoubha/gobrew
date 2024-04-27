@@ -110,3 +110,4 @@ $ ./gobrew -l llvm
 - [x] include **test dependencies** in calculation
 - [x] include **recommended dependencies** in calculation
 - [x] include **optional dependencies** in calculation
+- [x] count all versions of the language by default
