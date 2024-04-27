@@ -6,71 +6,44 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"slices"
+
+	"github.com/spf13/cobra"
 )
 
-// gobrew [-l|--lang] go
+const coreFormulasFile = "core_formulas.json"
+
+var (
+	buildDep bool
+	lang     string
+)
+
 func main() {
-	lang := "go" // get count of packags written in "go" language
-	coreFormulasFile := "core_formulas.json"
+	rootCmd := &cobra.Command{
+		Use:   "gobrew",
+		Short: "Count all programs written/built in X language or Y build system or Z library distributed via Homebrew.",
+		Long:  `Count all programs written/built in X language or Y build system or Z library distributed via Homebrew. Get all build dependencies of all packages in Homebrew Core formulae`,
+		Example: `gobrew -l go    # count all packages that depend on Go programming language.
+gobrew --lang rust    # count all packages that depend on Rust programming language.
+gobrew -b    # show all build dependencies of all Homebrew Core formulae.`,
+	}
 
-	switch len(os.Args) {
-	case 1:
-		if fileDoNotExist(coreFormulasFile) {
-			getCoreFormulas(coreFormulasFile)
-		}
-		formulas_list, err := getFormulasFromFile(coreFormulasFile, lang)
-		if err != nil {
-			fmt.Println("Error getting formulas list: ", err)
-		}
-		pkgCount := len(formulas_list)
+	rootCmd.Flags().BoolVarP(&buildDep, "build-dep", "b", false, "show building dependencies for all packages in Homebrew Core")
 
-		fmt.Println(pkgCount)
-	case 2:
-		if os.Args[1] == "--buildDeps" {
-			allBuildDeps, err := getAllBuildDeps(coreFormulasFile)
-			if err != nil {
-				fmt.Println("Error getting build dependencies: ", err)
-			}
-			fmt.Println("build dependencies count: ", len(allBuildDeps), "\n", allBuildDeps)
+	rootCmd.Flags().StringVarP(&lang, "lang", "l", "", "get count of all packages which have this language/build-system/library as a dependency (required)")
 
+	rootCmd.Run = func(cmd *cobra.Command, args []string) {
+		if buildDep {
+			getAllBuildDeps(coreFormulasFile)
+		} else if lang != "" {
+			getPackageCount(coreFormulasFile, lang)
 		} else {
-			fmt.Println("The language is not set. We'll count packages built in Go (by default).")
-			if fileDoNotExist(coreFormulasFile) {
-				getCoreFormulas(coreFormulasFile)
-			}
-			formulas_list, err := getFormulasFromFile(coreFormulasFile, lang)
-			if err != nil {
-				fmt.Println("Error getting formulas list: ", err)
-			}
-			pkgCount := len(formulas_list)
+			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
+			getPackageCount(coreFormulasFile, "go")
+		}
+	}
 
-			fmt.Println(pkgCount)
-		}
-	case 3:
-		allowedArgs := []string{"-l", "--lang"}
-		if !slices.Contains(allowedArgs, os.Args[1]) {
-			fmt.Printf("The argument (%v) is not supported.\n\nHere is how to use gobrew.\n  gobrew\n  gobrew -l rust\n  gobrew --lang cmake\n", os.Args[1])
-			return
-		}
-		if len(os.Args[2]) < 20 {
-			lang = os.Args[2]
-		} else {
-			fmt.Printf("The language is more than 20 characters long! which is weird! : language=%v\n", os.Args[2])
-			return
-		}
-		if fileDoNotExist(coreFormulasFile) {
-			getCoreFormulas(coreFormulasFile)
-		}
-		formulas_list, err := getFormulasFromFile(coreFormulasFile, lang)
-		if err != nil {
-			fmt.Println("Error getting formulas list: ", err)
-		}
-		pkgCount := len(formulas_list)
-
-		fmt.Println(pkgCount)
-	default:
-		fmt.Printf("gobrew : get the count of all packages written in X language or Y build system or depends on Z library.\n\nHere is how to use gobrew.\n  gobrew\n  gobrew -l rust\n  gobrew --lang cmake\n  gobrew -l meson\n  gobrew --buildDeps\n")
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
 	}
 
 	// for _, f := range formulas_list {
@@ -78,6 +51,24 @@ func main() {
 	// 		getFormulaInfo(f)
 	// 	}
 	// }
+}
+
+func getPackageCount(fileName, lang string) {
+	if len(lang) > 30 {
+		fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
+		return
+	}
+
+	if fileDoNotExist(fileName) {
+		getCoreFormulas(fileName)
+	}
+	formulas_list, err := getFormulasFromFile(fileName, lang)
+	if err != nil {
+		fmt.Println("Error getting formulas list: ", err)
+	}
+	pkgCount := len(formulas_list)
+
+	fmt.Println(pkgCount)
 }
 
 type Formula struct {
@@ -193,18 +184,18 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 	return allFormulas, nil
 }
 
-func getAllBuildDeps(fileName string) ([]string, error) {
+func getAllBuildDeps(fileName string) error {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-		return nil, err
+		return err
 	}
 
 	var formulas []Formula
 	err = json.Unmarshal(data, &formulas)
 	if err != nil {
 		fmt.Println("Error parsing JSON: ", err)
-		return nil, err
+		return err
 	}
 
 	buildDeps := map[interface{}]struct{}{}
@@ -219,7 +210,8 @@ func getAllBuildDeps(fileName string) ([]string, error) {
 
 	allBuildDeps := getKeysAsString(buildDeps)
 
-	return allBuildDeps, nil
+	fmt.Println(allBuildDeps)
+	return nil
 }
 
 func getKeysAsString(m map[interface{}]struct{}) []string {
