@@ -10,63 +10,92 @@ Too many curious questions I wanted to answer them using *realworld statistics*.
 
 ## commands
 
+### build CLI app from source
+
 ```sh
-# get deps, build, run
+# get deps, build the "gobrew" executable
+$ go mod tidy && go build -o gobrew main.go
+```
+
+### count all packages that use a specific language
+
+```sh
 # will show the count of packages written in Go in Homebrew Core (by default)
-$ go mod tidy && go build -o gobrew main.go && ./gobrew
-957
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l go
-957
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l rust
-524
-
-# get the packages built with "ninja" build system
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l ninja
-249
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l cython
-8
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l gcc
-6
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l cmake
-1005
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew --lang meson
-213
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l ruby
-2
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l swig
-28
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l lua
-6
-
-$ go mod tidy && go build -o gobrew main.go && ./gobrew -l python@3.12
-122
-
 $ ./gobrew
-957
+No language nor build system nor library is specified. Counting packages built in Go (by default):
+974
+
+$ ./gobrew -l go
+974
+
+$ ./gobrew --lang go
+974
 
 $ ./gobrew -l rust
 524
 
-$ gobrew
-957
+$ ./gobrew -l cython
+12
 
-$ gobrew -l rust
-524
+$ ./gobrew -l ruby
+27
 
-$ gobrew -l llvm
-30
+$ ./gobrew -l lua
+51
 
 $ ./gobrew -l zig
 6
+```
+
+#### all versions of the specified language
+
+- all versions of python
+
+```sh
+$ ./gobrew -l python
+771
+```
+
+- specific version of python
+
+```sh
+$ ./gobrew -l python@3.12
+718
+
+$ ./gobrew -l python@3.11
+67
+
+$ ./gobrew -l python@3.10
+10
+
+$ ./gobrew -l python@3.9
+6
+
+$ ./gobrew -l python@3.8
+2
+```
+
+### count all packages that use a specific build system or library
+
+```sh
+# get the packages built with "ninja" build system
+$ ./gobrew -l ninja
+253
+
+$ ./gobrew -l gcc
+75
+
+$ ./gobrew -l cmake
+1011
+
+$ ./gobrew -l meson
+213
+
+$ ./gobrew -l swig
+32
+
+$ ./gobrew -l llvm
+51
 ```
 
 ## tasks
