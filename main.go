@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -60,7 +61,7 @@ func getPackageCount(fileName, lang string) {
 		return
 	}
 
-	if fileDoNotExist(fileName) {
+	if fileDoNotExist(fileName) || isFileOld(fileName) {
 		getCoreFormulas(fileName)
 	}
 	formulas_list, err := getFormulasFromFile(fileName, lang)
@@ -305,4 +306,16 @@ func getCoreFormulas(fileName string) {
 	}
 
 	fmt.Println("successfully written JSON data into ", fileName)
+}
+
+func isFileOld(filePath string) bool {
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		// file not found
+		return true // consider it old, so we'll re-download it
+	}
+
+	sevenDaysAgo := time.Now().AddDate(0, 0, -7)
+
+	return fileInfo.ModTime().Before(sevenDaysAgo)
 }
