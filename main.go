@@ -61,7 +61,7 @@ func getPackageCount(fileName, lang string) {
 		return
 	}
 
-	if fileDoNotExist(fileName) || isFileOld(fileName) {
+	if !isFileFound(fileName) || isFileOld(fileName) {
 		getCoreFormulas(fileName)
 	}
 	formulas_list, err := getFormulasFromFile(fileName, lang)
@@ -259,18 +259,18 @@ func getKeysAsString(m map[interface{}]struct{}) []string {
 // 	fmt.Println("successfully written JSON data into ", filePath)
 // }
 
-func fileDoNotExist(fileName string) bool {
+func isFileFound(fileName string) bool {
 	_, err := os.Open(fileName)
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("The file", fileName, "does not exist")
-			return true
+			return false
 		} else {
 			fmt.Println("Error opening the file ", fileName, ": ", err.Error())
-			return true
+			return false
 		}
 	}
-	return false // the file exists
+	return true
 }
 
 func getCoreFormulas(fileName string) {
