@@ -75,13 +75,13 @@ func getPackageCount(fileName, lang string) {
 }
 
 type Formula struct {
-	Name                    string      `json:"name"`
-	BuildDependencies       []string    `json:"build_dependencies"`
-	Dependencies            []string    `json:"dependencies"`
-	TestDependencies        []string    `json:"test_dependencies"`
-	RecommendedDependencies []string    `json:"recommended_dependencies"`
-	OptionalDependencies    []string    `json:"optional_dependencies"`
-	Requirements            interface{} `json:"requirements"`
+	Name                    string   `json:"name"`
+	BuildDependencies       []string `json:"build_dependencies"`
+	Dependencies            []string `json:"dependencies"`
+	TestDependencies        []string `json:"test_dependencies"`
+	RecommendedDependencies []string `json:"recommended_dependencies"`
+	OptionalDependencies    []string `json:"optional_dependencies"`
+	// Requirements            interface{} `json:"requirements"`
 	// FullName                string      `json:"full_name"`
 	// UsesFromMacos           interface{} `json:"uses_from_macos"`
 	// UsesFromMacosBounds     interface{} `json:"uses_from_macos_bounds"`
