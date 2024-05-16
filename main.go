@@ -24,9 +24,9 @@ func main() {
 		Use:   "gobrew",
 		Short: "Count all programs written/built in X language or Y build system or Z library distributed via Homebrew.",
 		Long:  `Count all programs written/built in X language or Y build system or Z library distributed via Homebrew. Get all build dependencies of all packages in Homebrew Core formulae`,
-		Example: `gobrew -l go    # count all packages that depend on Go programming language.
+		Example: `gobrew -l go          # count all packages that depend on Go programming language.
 gobrew --lang rust    # count all packages that depend on Rust programming language.
-gobrew -b    # show all build dependencies of all Homebrew Core formulae.`,
+gobrew -b             # show all build dependencies of all Homebrew Core formulae.`,
 	}
 
 	rootCmd.Flags().BoolVarP(&buildDep, "build-dep", "b", false, "show building dependencies for all packages in Homebrew Core")
@@ -61,7 +61,8 @@ func getPackageCount(fileName, lang string) {
 		return
 	}
 
-	if !isFileFound(fileName) || isFileOld(fileName) {
+	// if !isFileFound(fileName) || isFileOld(fileName) {
+	if isFileOld(fileName) { // if true, either old or not found
 		getCoreFormulas(fileName)
 	}
 	formulas_list, err := getFormulasFromFile(fileName, lang)
@@ -259,19 +260,19 @@ func getKeysAsString(m map[interface{}]struct{}) []string {
 // 	fmt.Println("successfully written JSON data into ", filePath)
 // }
 
-func isFileFound(fileName string) bool {
-	_, err := os.Open(fileName)
-	if err != nil {
-		if os.IsNotExist(err) {
-			fmt.Println("The file", fileName, "does not exist")
-			return false
-		} else {
-			fmt.Println("Error opening the file ", fileName, ": ", err.Error())
-			return false
-		}
-	}
-	return true
-}
+// func isFileFound(fileName string) bool {
+// 	_, err := os.Open(fileName)
+// 	if err != nil {
+// 		if os.IsNotExist(err) {
+// 			fmt.Println("The file", fileName, "does not exist")
+// 			return false
+// 		} else {
+// 			fmt.Println("Error opening the file ", fileName, ": ", err.Error())
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }
 
 func getCoreFormulas(fileName string) {
 	resp, err := http.Get("https://formulae.brew.sh/api/formula.json")
