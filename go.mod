@@ -1,6 +1,6 @@
 module github.com/abanoubha/homebrew_go_programs_count
 
-go 1.22.2
+go 1.22.3
 
 require github.com/spf13/cobra v1.8.0
 
