@@ -16,7 +16,7 @@ I wrote a post about my findings regarding [Go vs Rust usage in Homebrew Core fo
 
 ```sh
 # get deps, build the "gobrew" executable
-$ go mod tidy && go build -o gobrew main.go
+$ go mod tidy && go build -o gobrew .
 ```
 
 ### count all packages that use a specific language
