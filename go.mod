@@ -1,4 +1,4 @@
-module github.com/abanoubha/homebrew_go_programs_count
+module github.com/abanoubha/gobrew
 
 go 1.22.4
 
