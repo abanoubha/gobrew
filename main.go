@@ -103,8 +103,8 @@ func getDependants(fileName, lang string) {
 		fmt.Println("Error getting formulas list: ", err)
 	}
 
-	for k := range formulas_list {
-		fmt.Println(k)
+	for k, v := range formulas_list {
+		fmt.Println("\n", k, ":\n  ", v)
 	}
 }
 
@@ -115,6 +115,7 @@ type Formula struct {
 	TestDependencies        []string `json:"test_dependencies"`
 	RecommendedDependencies []string `json:"recommended_dependencies"`
 	OptionalDependencies    []string `json:"optional_dependencies"`
+	Desc                    string   `json:"desc"`
 	// Requirements            interface{} `json:"requirements"`
 	// FullName                string      `json:"full_name"`
 	// UsesFromMacos           interface{} `json:"uses_from_macos"`
@@ -124,7 +125,6 @@ type Formula struct {
 	// Oldnames                []string               `json:"oldnames"`
 	// Aliases                 []string               `json:"aliases"`
 	// VersionedFormulae       []string               `json:"versioned_formulae"`
-	// Desc                    string                 `json:"desc"`
 	// License                 string                 `json:"license"`
 	// Homepage                string                 `json:"homepage"`
 	// Versions                map[string]interface{} `json:"versions"`
@@ -158,7 +158,7 @@ type Formula struct {
 	// Variations              interface{}            `json:"variations"`
 }
 
-func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, error) {
+func getFormulasFromFile(fileName, langName string) (map[interface{}]string, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
@@ -172,7 +172,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		return nil, err
 	}
 
-	allFormulas := map[interface{}]struct{}{}
+	allFormulas := map[interface{}]string{}
 
 	for _, formula := range formulas {
 
@@ -182,7 +182,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		if len(formula.BuildDependencies) > 0 {
 			for _, dep := range formula.BuildDependencies {
 				if dep == langName || strings.HasPrefix(dep, langAt) {
-					allFormulas[formula.Name] = struct{}{}
+					allFormulas[formula.Name] = formula.Desc
 				}
 			}
 		}
@@ -190,7 +190,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		if len(formula.Dependencies) > 0 {
 			for _, dep := range formula.Dependencies {
 				if dep == langName || strings.HasPrefix(dep, langAt) {
-					allFormulas[formula.Name] = struct{}{}
+					allFormulas[formula.Name] = formula.Desc
 				}
 			}
 		}
@@ -198,7 +198,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		if len(formula.TestDependencies) > 0 {
 			for _, dep := range formula.TestDependencies {
 				if dep == langName || strings.HasPrefix(dep, langAt) {
-					allFormulas[formula.Name] = struct{}{}
+					allFormulas[formula.Name] = formula.Desc
 				}
 			}
 		}
@@ -206,7 +206,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		if len(formula.RecommendedDependencies) > 0 {
 			for _, dep := range formula.RecommendedDependencies {
 				if dep == langName || strings.HasPrefix(dep, langAt) {
-					allFormulas[formula.Name] = struct{}{}
+					allFormulas[formula.Name] = formula.Desc
 				}
 			}
 		}
@@ -214,7 +214,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]struct{}, e
 		if len(formula.OptionalDependencies) > 0 {
 			for _, dep := range formula.OptionalDependencies {
 				if dep == langName || strings.HasPrefix(dep, langAt) {
-					allFormulas[formula.Name] = struct{}{}
+					allFormulas[formula.Name] = formula.Desc
 				}
 			}
 		}
