@@ -159,7 +159,7 @@ type Formula struct {
 }
 
 func getFormulasFromFile(fileName, langName string) (map[interface{}]string, error) {
-	data, err := os.ReadFile(fileName)
+	data, err := os.ReadFile(os.TempDir() + fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return nil, err
@@ -225,7 +225,7 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]string, err
 }
 
 func getAllBuildDeps(fileName string) error {
-	data, err := os.ReadFile(fileName)
+	data, err := os.ReadFile(os.TempDir() + fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return err
@@ -260,7 +260,7 @@ type KV struct {
 }
 
 func getAllStatistics(fileName string) error {
-	data, err := os.ReadFile(fileName)
+	data, err := os.ReadFile(os.TempDir() + fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return err
