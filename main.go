@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -226,6 +227,11 @@ func getAllBuildDeps(fileName string) error {
 	return nil
 }
 
+type KV struct {
+	Key string
+	Val int
+}
+
 func getAllStatistics(fileName string) error {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
@@ -278,8 +284,16 @@ func getAllStatistics(fileName string) error {
 
 	fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
 
+	// sort all languages by the count of their packages
+	kvPairs := make([]KV, 0, len(data))
 	for k, v := range deps {
-		fmt.Println(k, ":", v)
+		kvPairs = append(kvPairs, KV{k, v})
+	}
+	sort.Slice(kvPairs, func(i, j int) bool {
+		return kvPairs[i].Val > kvPairs[j].Val
+	})
+	for _, pair := range kvPairs {
+		fmt.Println(pair.Key, ":", pair.Val)
 	}
 
 	return nil
