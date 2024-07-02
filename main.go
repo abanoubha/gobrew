@@ -16,6 +16,7 @@ import (
 const coreFormulasFile = "core_formulas.json"
 
 var (
+	version    bool
 	buildDep   bool
 	statistics bool
 	lang       string
@@ -34,6 +35,8 @@ gobrew -d go          # show all dependants of certain language/lib.
 gobrew -s             # show all languages and the count of packages which depends on each one of them.`,
 	}
 
+	rootCmd.Flags().BoolVarP(&version, "version", "v", false, "show the release version of gobrew")
+
 	rootCmd.Flags().BoolVarP(&buildDep, "build-dep", "b", false, "show building dependencies for all packages in Homebrew Core")
 
 	rootCmd.Flags().BoolVarP(&statistics, "statistics", "s", false, "show all languages and the count of packages which depends on each one of them")
@@ -51,6 +54,8 @@ gobrew -s             # show all languages and the count of packages which depen
 			getPackageCount(coreFormulasFile, lang)
 		} else if dependants != "" {
 			getDependants(coreFormulasFile, dependants)
+		} else if version {
+			fmt.Println("gobrew v24.07.04")
 		} else {
 			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
 			getPackageCount(coreFormulasFile, "go")
