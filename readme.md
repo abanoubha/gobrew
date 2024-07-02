@@ -12,6 +12,12 @@ I wrote a post about my findings regarding [Go vs Rust usage in Homebrew Core fo
 
 ## commands
 
+### install gobrew
+
+```sh
+go install github.com/abanoubha/gobrew
+```
+
 ### build CLI app from source
 
 ```sh
