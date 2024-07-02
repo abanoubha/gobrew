@@ -55,7 +55,13 @@ gobrew -s             # show all languages and the count of packages which depen
 		} else if dependants != "" {
 			getDependants(coreFormulasFile, dependants)
 		} else if version {
-			fmt.Println("gobrew v24.07.04")
+			fmt.Println(`
+gobrew v24.07.05
+
+Software Developer  : Abanoub Hanna
+Source code         : https://github.com/abanoubha/gobrew
+Twitter             : https://x.com/@AbanoubHA
+Developer's Website : https://AbanoubHanna.com`)
 		} else {
 			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
 			getPackageCount(coreFormulasFile, "go")
