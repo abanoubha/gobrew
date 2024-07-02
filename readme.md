@@ -126,5 +126,5 @@ All Build Dependencies Count:  320
 - [x] include **optional dependencies** in calculation
 - [x] count all versions of the language by default ([commit](https://github.com/abanoubha/gobrew/commit/7de9e76c03401ce70568417db550eda590bff919))
 - [x] re-download Homebrew/Core formulae index JSON file if the local one is older than 7 days ([commit](https://github.com/abanoubha/gobrew/commit/2a9713b90dd319203ec7692df81fb6c8e5759277))
-- [ ] show all languages and count of their packages depend on them
+- [x] show all languages and count of their packages depend on them
 - [ ] show all packages depends on specific language
