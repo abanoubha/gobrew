@@ -230,6 +230,10 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]string, err
 }
 
 func getAllBuildDeps(fileName string) error {
+	if isFileOld(fileName) { // if true, either old or not found
+		getCoreFormulas(fileName)
+	}
+
 	data, err := os.ReadFile(os.TempDir() + fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
@@ -265,6 +269,10 @@ type KV struct {
 }
 
 func getAllStatistics(fileName string) error {
+	if isFileOld(fileName) { // if true, either old or not found
+		getCoreFormulas(fileName)
+	}
+
 	data, err := os.ReadFile(os.TempDir() + fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
