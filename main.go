@@ -19,6 +19,7 @@ var (
 	buildDep   bool
 	statistics bool
 	lang       string
+	dependants string
 )
 
 func main() {
@@ -29,6 +30,7 @@ func main() {
 		Example: `gobrew -l go          # count all packages that depend on Go programming language.
 gobrew --lang rust    # count all packages that depend on Rust programming language.
 gobrew -b             # show all build dependencies of all Homebrew Core formulae.
+gobrew -d go          # show all dependants of certain language/lib.
 gobrew -s             # show all languages and the count of packages which depends on each one of them.`,
 	}
 
@@ -38,6 +40,8 @@ gobrew -s             # show all languages and the count of packages which depen
 
 	rootCmd.Flags().StringVarP(&lang, "lang", "l", "", "get count of all packages which have this language/build-system/library as a dependency (required)")
 
+	rootCmd.Flags().StringVarP(&dependants, "dependants", "d", "", "show all dependants of certain language/build-system/library")
+
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		if buildDep {
 			getAllBuildDeps(coreFormulasFile)
@@ -45,6 +49,8 @@ gobrew -s             # show all languages and the count of packages which depen
 			getAllStatistics(coreFormulasFile)
 		} else if lang != "" {
 			getPackageCount(coreFormulasFile, lang)
+		} else if dependants != "" {
+			getDependants(coreFormulasFile, dependants)
 		} else {
 			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
 			getPackageCount(coreFormulasFile, "go")
@@ -79,6 +85,27 @@ func getPackageCount(fileName, lang string) {
 	pkgCount := len(formulas_list)
 
 	fmt.Println(pkgCount)
+}
+
+func getDependants(fileName, lang string) {
+	if len(lang) > 30 {
+		fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
+		return
+	}
+
+	// if !isFileFound(fileName) || isFileOld(fileName) {
+	if isFileOld(fileName) { // if true, either old or not found
+		getCoreFormulas(fileName)
+	}
+
+	formulas_list, err := getFormulasFromFile(fileName, lang)
+	if err != nil {
+		fmt.Println("Error getting formulas list: ", err)
+	}
+
+	for k := range formulas_list {
+		fmt.Println(k)
+	}
 }
 
 type Formula struct {
