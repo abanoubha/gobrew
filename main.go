@@ -240,19 +240,45 @@ func getAllStatistics(fileName string) error {
 		return err
 	}
 
-	buildDeps := map[string]int{}
+	deps := map[string]int{}
 
 	for _, formula := range formulas {
+		// BuildDependencies
 		if len(formula.BuildDependencies) > 0 {
 			for _, dep := range formula.BuildDependencies {
-				buildDeps[dep] = buildDeps[dep] + 1
+				deps[dep] = deps[dep] + 1
+			}
+		}
+
+		// Dependencies
+		if len(formula.Dependencies) > 0 {
+			for _, dep := range formula.Dependencies {
+				deps[dep] = deps[dep] + 1
+			}
+		}
+		// TestDependencies
+		if len(formula.TestDependencies) > 0 {
+			for _, dep := range formula.TestDependencies {
+				deps[dep] = deps[dep] + 1
+			}
+		}
+		// RecommendedDependencies
+		if len(formula.RecommendedDependencies) > 0 {
+			for _, dep := range formula.RecommendedDependencies {
+				deps[dep] = deps[dep] + 1
+			}
+		}
+		// OptionalDependencies
+		if len(formula.OptionalDependencies) > 0 {
+			for _, dep := range formula.OptionalDependencies {
+				deps[dep] = deps[dep] + 1
 			}
 		}
 	}
 
-	fmt.Println("All Build Dependencies Count: ", len(buildDeps))
+	fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
 
-	for k, v := range buildDeps {
+	for k, v := range deps {
 		fmt.Println(k, ":", v)
 	}
 
