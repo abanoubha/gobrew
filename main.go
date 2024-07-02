@@ -15,8 +15,9 @@ import (
 const coreFormulasFile = "core_formulas.json"
 
 var (
-	buildDep bool
-	lang     string
+	buildDep   bool
+	statistics bool
+	lang       string
 )
 
 func main() {
@@ -26,16 +27,21 @@ func main() {
 		Long:  `Count all programs written/built in X language or Y build system or Z library distributed via Homebrew. Get all build dependencies of all packages in Homebrew Core formulae`,
 		Example: `gobrew -l go          # count all packages that depend on Go programming language.
 gobrew --lang rust    # count all packages that depend on Rust programming language.
-gobrew -b             # show all build dependencies of all Homebrew Core formulae.`,
+gobrew -b             # show all build dependencies of all Homebrew Core formulae.
+gobrew -s             # show all languages and the count of packages which depends on each one of them.`,
 	}
 
 	rootCmd.Flags().BoolVarP(&buildDep, "build-dep", "b", false, "show building dependencies for all packages in Homebrew Core")
+
+	rootCmd.Flags().BoolVarP(&statistics, "statistics", "s", false, "show all languages and the count of packages which depends on each one of them")
 
 	rootCmd.Flags().StringVarP(&lang, "lang", "l", "", "get count of all packages which have this language/build-system/library as a dependency (required)")
 
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		if buildDep {
 			getAllBuildDeps(coreFormulasFile)
+		} else if statistics {
+			getAllStatistics(coreFormulasFile)
 		} else if lang != "" {
 			getPackageCount(coreFormulasFile, lang)
 		} else {
@@ -217,6 +223,39 @@ func getAllBuildDeps(fileName string) error {
 	allBuildDeps := getKeysAsString(buildDeps)
 
 	fmt.Println("All Build Dependencies Count: ", len(allBuildDeps), "\n", allBuildDeps)
+	return nil
+}
+
+func getAllStatistics(fileName string) error {
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return err
+	}
+
+	var formulas []Formula
+	err = json.Unmarshal(data, &formulas)
+	if err != nil {
+		fmt.Println("Error parsing JSON: ", err)
+		return err
+	}
+
+	buildDeps := map[string]int{}
+
+	for _, formula := range formulas {
+		if len(formula.BuildDependencies) > 0 {
+			for _, dep := range formula.BuildDependencies {
+				buildDeps[dep] = buildDeps[dep] + 1
+			}
+		}
+	}
+
+	fmt.Println("All Build Dependencies Count: ", len(buildDeps))
+
+	for k, v := range buildDeps {
+		fmt.Println(k, ":", v)
+	}
+
 	return nil
 }
 
