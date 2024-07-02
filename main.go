@@ -401,7 +401,7 @@ func getCoreFormulas(fileName string) {
 	//	return
 	//}
 
-	outFile, err := os.CreateTemp("", fileName) //os.Create(fileName)
+	outFile, err := os.Create(os.TempDir() + fileName) //os.CreateTemp("", fileName)
 
 	if err != nil {
 		fmt.Println("Error creating file: ", err.Error())
@@ -417,7 +417,7 @@ func getCoreFormulas(fileName string) {
 		return
 	}
 
-	fmt.Println("successfully written JSON data into ", fileName)
+	fmt.Println("successfully written JSON data into ", os.TempDir()+fileName)
 }
 
 func isFileOld(filePath string) bool {
