@@ -396,7 +396,7 @@ func getCoreFormulas(fileName string) {
 	//	return
 	//}
 
-	outFile, err := os.Create(fileName)
+	outFile, err := os.CreateTemp("", fileName) //os.Create(fileName)
 
 	if err != nil {
 		fmt.Println("Error creating file: ", err.Error())
@@ -416,7 +416,7 @@ func getCoreFormulas(fileName string) {
 }
 
 func isFileOld(filePath string) bool {
-	fileInfo, err := os.Stat(filePath)
+	fileInfo, err := os.Stat(os.TempDir() + filePath)
 	if err != nil {
 		// file not found
 		return true // consider it old, so we'll re-download it
