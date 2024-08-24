@@ -3,6 +3,7 @@
 
 # executable
 gobrew
+snap/gobrew*.snap
 
 # result files & data
 core_formulas.json
