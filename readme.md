@@ -2,8 +2,6 @@
 
 Count all programs written/built in Go/Rust/Python/.. and distributed via Homebrew.
 
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/gobrew)
-
 ## why I built this?
 
 I was curious. Are people _actually_ using Go more than Rust? Are there more software written with cmake or meson or ninja .. ?
@@ -16,9 +14,15 @@ I wrote a post about my findings regarding [Go vs Rust usage in Homebrew Core fo
 
 ### install gobrew
 
+- install using Go
+
 ```sh
 go install github.com/abanoubha/gobrew
 ```
+
+- install via the snap store
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/gobrew)
 
 ### build CLI app from source
 
