@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -14,6 +15,8 @@ import (
 )
 
 const coreFormulasFile = "core_formulas.json"
+
+var coreFormulaeFilePath = filepath.Join(os.TempDir(), coreFormulasFile)
 
 var (
 	version    bool
@@ -47,13 +50,13 @@ gobrew -s             # show all languages and the count of packages which depen
 
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		if buildDep {
-			getAllBuildDeps(coreFormulasFile)
+			getAllBuildDeps(coreFormulaeFilePath)
 		} else if statistics {
-			getAllStatistics(coreFormulasFile)
+			getAllStatistics(coreFormulaeFilePath)
 		} else if lang != "" {
-			getPackageCount(coreFormulasFile, lang)
+			getPackageCount(coreFormulaeFilePath, lang)
 		} else if dependants != "" {
-			getDependants(coreFormulasFile, dependants)
+			getDependants(coreFormulaeFilePath, dependants)
 		} else if version {
 			fmt.Println(`
 gobrew v24.07.05
@@ -64,7 +67,7 @@ Twitter             : https://x.com/@AbanoubHA
 Developer's Website : https://AbanoubHanna.com`)
 		} else {
 			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
-			getPackageCount(coreFormulasFile, "go")
+			getPackageCount(coreFormulaeFilePath, "go")
 		}
 	}
 
@@ -170,7 +173,7 @@ type Formula struct {
 }
 
 func getFormulasFromFile(fileName, langName string) (map[interface{}]string, error) {
-	data, err := os.ReadFile(os.TempDir() + fileName)
+	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return nil, err
@@ -240,7 +243,7 @@ func getAllBuildDeps(fileName string) error {
 		getCoreFormulas(fileName)
 	}
 
-	data, err := os.ReadFile(os.TempDir() + fileName)
+	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return err
@@ -279,7 +282,7 @@ func getAllStatistics(fileName string) error {
 		getCoreFormulas(fileName)
 	}
 
-	data, err := os.ReadFile(os.TempDir() + fileName)
+	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return err
@@ -415,7 +418,7 @@ func getCoreFormulas(fileName string) {
 	//	return
 	//}
 
-	outFile, err := os.Create(os.TempDir() + fileName) //os.CreateTemp("", fileName)
+	outFile, err := os.Create(fileName) //os.CreateTemp("", fileName)
 
 	if err != nil {
 		fmt.Println("Error creating file: ", err.Error())
@@ -431,11 +434,11 @@ func getCoreFormulas(fileName string) {
 		return
 	}
 
-	fmt.Println("successfully written JSON data into ", os.TempDir()+fileName)
+	fmt.Println("successfully written JSON data into ", fileName)
 }
 
 func isFileOld(filePath string) bool {
-	fileInfo, err := os.Stat(os.TempDir() + filePath)
+	fileInfo, err := os.Stat(filePath)
 	if err != nil {
 		// file not found
 		return true // consider it old, so we'll re-download it
