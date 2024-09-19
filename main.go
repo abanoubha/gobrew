@@ -14,6 +14,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const VERSION = "24.09.07"
+
 const coreFormulasFile = "core_formulas.json"
 
 var coreFormulaeFilePath = filepath.Join(os.TempDir(), coreFormulasFile)
@@ -58,13 +60,13 @@ gobrew -s             # show all languages and the count of packages which depen
 		} else if dependants != "" {
 			getDependants(coreFormulaeFilePath, dependants)
 		} else if version {
-			fmt.Println(`
-gobrew v24.07.05
+			fmt.Printf(`
+gobrew v%v
 
 Software Developer  : Abanoub Hanna
 Source code         : https://github.com/abanoubha/gobrew
 Twitter             : https://x.com/@AbanoubHA
-Developer's Website : https://AbanoubHanna.com`)
+Developer's Website : https://AbanoubHanna.com`, VERSION)
 		} else {
 			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
 			getPackageCount(coreFormulaeFilePath, "go")
