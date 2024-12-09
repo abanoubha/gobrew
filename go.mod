@@ -1,6 +1,6 @@
 module github.com/abanoubha/gobrew
 
-go 1.23.1
+go 1.23.4
 
 require github.com/spf13/cobra v1.8.1
 
