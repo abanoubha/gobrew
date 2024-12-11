@@ -26,6 +26,7 @@ var (
 	statistics bool
 	lang       string
 	dependants string
+	chart      string
 )
 
 func main() {
@@ -50,9 +51,13 @@ gobrew -s             # show all languages and the count of packages which depen
 
 	rootCmd.Flags().StringVarP(&dependants, "dependants", "d", "", "show all dependants of certain language/build-system/library")
 
+	rootCmd.Flags().StringVarP(&chart, "chart", "c", "", "create an SVG chart for statistics of specified languages")
+
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		if buildDep {
 			getAllBuildDeps(coreFormulaeFilePath)
+		} else if chart != "" {
+			generateSVGChart(coreFormulaeFilePath, chart)
 		} else if statistics {
 			getAllStatistics(coreFormulaeFilePath)
 		} else if lang != "" {
@@ -82,6 +87,41 @@ Developer's Website : https://AbanoubHanna.com`, VERSION)
 	// 		getFormulaInfo(f)
 	// 	}
 	// }
+}
+
+func generateSVGChart(fileName, chart string) error {
+
+	langStats := make(map[string]int)
+
+	langs := strings.Split(chart, ",")
+
+	for _, lang := range langs {
+		if len(lang) > 30 {
+			fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
+			break
+		}
+
+		// if !isFileFound(fileName) || isFileOld(fileName) {
+		if isFileOld(fileName) { // if true, either old or not found
+			getCoreFormulas(fileName)
+		}
+
+		formulas_list, err := getFormulasFromFile(fileName, lang)
+
+		if err != nil {
+			fmt.Println("Error getting formulas list: ", err)
+		}
+
+		pkgCount := len(formulas_list)
+
+		langStats[lang] = pkgCount
+	}
+
+	for k, v := range langStats {
+		println(k, v)
+	}
+
+	return nil
 }
 
 func getPackageCount(fileName, lang string) {
