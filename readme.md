@@ -670,3 +670,4 @@ $ ./gobrew -d zig
   - show all packages depends on specific language
 - next
   - output SVG chart of specified programming languages
+  - get statistics from APT package manager too
