@@ -28,6 +28,11 @@ This page shows the roadmap with versioned tasks along with releases.
 
 - fix: use latest codebase in the snap package
 
+## 25.03.06
+
+- set the minimum Go version to 1.24
+- upgrade Cobra lib/dep
+
 ## next
 
 - output SVG chart of specified programming languages
