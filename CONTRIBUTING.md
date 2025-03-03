@@ -80,4 +80,4 @@ snapcraft promote --from-channel edge --to-channel stable gobrew
 snapcraft promote --from-channel beta --to-channel stable gobrew
 ```
 
-You can just trigger a new build in the snapcraft management dashboard, so you do not need anything like packaging nor uploading nor promoting.
+You can just trigger a new build in the [snapcraft management dashboard](https://snapcraft.io/gobrew/builds), so you do not need anything like packaging nor uploading nor promoting.
