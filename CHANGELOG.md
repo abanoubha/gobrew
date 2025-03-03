@@ -33,6 +33,10 @@ This page shows the roadmap with versioned tasks along with releases.
 - set the minimum Go version to 1.24
 - upgrade Cobra lib/dep
 
+## 25.03.07
+
+- support all platforms & archs by letting snapcraft build dashboard handle the build process
+
 ## next
 
 - output SVG chart of specified programming languages
