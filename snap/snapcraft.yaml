@@ -6,8 +6,8 @@ description: |
 license: Apache-2.0
 
 base: core24
-confinement: devmode # change it to 'strict' later
-grade: stable # change it to 'stable'
+confinement: strict
+grade: stable
 
 apps:
   gobrew:
