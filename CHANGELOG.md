@@ -24,7 +24,7 @@ This page shows the roadmap with versioned tasks along with releases.
 - gobrew snap package support x64/amd64, arm64, and riscv64 architectures
 - release all archs for stable channel
 
-## 24.03.04
+## 25.03.05
 
 - fix: use latest codebase in the snap package
 

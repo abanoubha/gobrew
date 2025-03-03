@@ -1,5 +1,5 @@
 name: gobrew
-version: 24.03.04
+version: 25.03.05
 summary: Count all packages built with a specific language
 description: |
   Count all packages built with a specific programming language and distributed by Homebrew.
@@ -31,5 +31,5 @@ parts:
   gobrew:
     plugin: go
     build-snaps: [go/latest/stable]
-    source: https://github.com/abanoubha/gobrew@latest
+    source: https://github.com/abanoubha/gobrew
     source-type: git
