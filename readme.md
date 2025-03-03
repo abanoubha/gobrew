@@ -1,5 +1,7 @@
 # gobrew
 
+[![gobrew](https://snapcraft.io/gobrew/badge.svg)](https://snapcraft.io/gobrew)
+
 Count all programs written/built in Go/Rust/Python/.. and distributed via Homebrew.
 
 [![asciicast](https://asciinema.org/a/674093.svg)](https://asciinema.org/a/674093)
