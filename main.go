@@ -37,11 +37,6 @@ func main() {
 		Use:   "gobrew",
 		Short: "Count all programs written/built in X language or Y build system or Z library distributed via Homebrew.",
 		Long:  `Count all programs written/built in X language or Y build system or Z library distributed via Homebrew. Get all build dependencies of all packages in Homebrew Core formulae`,
-		Example: `gobrew -l go          # count all packages that depend on Go programming language.
-gobrew --lang rust    # count all packages that depend on Rust programming language.
-gobrew -b             # show all build dependencies of all Homebrew Core formulae.
-gobrew -d go          # show all dependants of certain language/lib.
-gobrew -s             # show all languages and the count of packages which depends on each one of them.`,
 	}
 
 	rootCmd.Flags().BoolVarP(&version, "version", "v", false, "show the release version of gobrew")
