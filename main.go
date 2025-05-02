@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const VERSION = "25.03.07"
+const VERSION = "25.05.03"
 
 const coreFormulasFile = "core_formulas.json"
 
