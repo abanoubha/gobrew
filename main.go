@@ -18,7 +18,9 @@ const VERSION = "25.03.07"
 
 const coreFormulasFile = "core_formulas.json"
 
-var coreFormulaeFilePath = filepath.Join(os.TempDir(), coreFormulasFile)
+// var coreFormulaeFilePath = filepath.Join(os.TempDir(), coreFormulasFile)
+var cachePath = filepath.Join(os.Getenv("HOME"), ".gobrew")
+var coreFormulaeFilePath = filepath.Join(cachePath, coreFormulasFile)
 
 var (
 	version    bool
@@ -459,6 +461,14 @@ func getCoreFormulas(fileName string) {
 	//	fmt.Println("Error reading response body", err.Error())
 	//	return
 	//}
+
+	if _, err := os.Stat(cachePath); os.IsNotExist(err) {
+		err = os.Mkdir(cachePath, 0755)
+		if err != nil {
+			fmt.Println("Error creating '~/.gobrew' directory: ", err.Error())
+			return
+		}
+	}
 
 	outFile, err := os.Create(fileName) //os.CreateTemp("", fileName)
 
