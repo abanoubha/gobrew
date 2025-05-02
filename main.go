@@ -58,7 +58,11 @@ gobrew -s             # show all languages and the count of packages which depen
 
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		if buildDep {
-			getAllBuildDeps(coreFormulaeFilePath)
+			err := getAllBuildDeps(coreFormulaeFilePath)
+			if err != nil {
+				fmt.Println("error: ", err)
+			}
+
 		} else if chart != "" {
 			generateSVGChart(coreFormulaeFilePath, chart)
 		} else if statistics {
@@ -318,36 +322,61 @@ func getFormulasFromFile(fileName, langName string) (map[interface{}]string, err
 }
 
 func getAllBuildDeps(fileName string) error {
-	if isFileOld(fileName) { // if true, either old or not found
-		getCoreFormulas(fileName)
-	}
+	var allBuildDepsCache = filepath.Join(cachePath, "allBuildDepsCache")
+	if _, err := os.Stat(allBuildDepsCache); os.IsNotExist(err) {
 
-	data, err := os.ReadFile(fileName)
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return err
-	}
+		if isFileOld(fileName) { // if true, either old or not found
+			getCoreFormulas(fileName)
+		}
 
-	var formulas []Formula
-	err = json.Unmarshal(data, &formulas)
-	if err != nil {
-		fmt.Println("Error parsing JSON: ", err)
-		return err
-	}
+		data, err := os.ReadFile(fileName)
+		if err != nil {
+			fmt.Println("Error reading file:", err)
+			return err
+		}
 
-	buildDeps := map[interface{}]struct{}{}
+		var formulas []Formula
+		err = json.Unmarshal(data, &formulas)
+		if err != nil {
+			fmt.Println("Error parsing JSON: ", err)
+			return err
+		}
 
-	for _, formula := range formulas {
-		if len(formula.BuildDependencies) > 0 {
-			for _, dep := range formula.BuildDependencies {
-				buildDeps[dep] = struct{}{}
+		buildDeps := map[interface{}]struct{}{}
+
+		for _, formula := range formulas {
+			if len(formula.BuildDependencies) > 0 {
+				for _, dep := range formula.BuildDependencies {
+					buildDeps[dep] = struct{}{}
+				}
 			}
 		}
+
+		allBuildDeps := getKeysAsString(buildDeps)
+
+		allbuildDepsStr := fmt.Sprintf("All Build Dependencies Count: %v\n%v", len(allBuildDeps), allBuildDeps)
+
+		fmt.Println(allbuildDepsStr)
+
+		outfile, err := os.Create(allBuildDepsCache)
+		if err != nil {
+			return err
+		}
+		defer outfile.Close()
+
+		_, err = outfile.WriteString(allbuildDepsStr)
+		if err != nil {
+			return err
+		}
+
+	} else {
+		allBuildDeps, err := os.ReadFile(allBuildDepsCache)
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(allBuildDeps))
 	}
 
-	allBuildDeps := getKeysAsString(buildDeps)
-
-	fmt.Println("All Build Dependencies Count: ", len(allBuildDeps), "\n", allBuildDeps)
 	return nil
 }
 
