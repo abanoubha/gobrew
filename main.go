@@ -66,7 +66,11 @@ gobrew -s             # show all languages and the count of packages which depen
 		} else if chart != "" {
 			generateSVGChart(coreFormulaeFilePath, chart)
 		} else if statistics {
-			getAllStatistics(coreFormulaeFilePath)
+			err := getAllStatistics(coreFormulaeFilePath)
+			if err != nil {
+				fmt.Println("error: ", err)
+			}
+
 		} else if lang != "" {
 			pkgCount, err := getPackageCount(coreFormulaeFilePath, lang)
 			if err != nil {
@@ -386,71 +390,97 @@ type KV struct {
 }
 
 func getAllStatistics(fileName string) error {
-	if isFileOld(fileName) { // if true, either old or not found
-		getCoreFormulas(fileName)
-	}
+	var allStatisticsCache = filepath.Join(cachePath, "allStatisticsCache")
+	if _, err := os.Stat(allStatisticsCache); os.IsNotExist(err) {
 
-	data, err := os.ReadFile(fileName)
-	if err != nil {
-		fmt.Println("Error reading file:", err)
-		return err
-	}
+		if isFileOld(fileName) { // if true, either old or not found
+			getCoreFormulas(fileName)
+		}
 
-	var formulas []Formula
-	err = json.Unmarshal(data, &formulas)
-	if err != nil {
-		fmt.Println("Error parsing JSON: ", err)
-		return err
-	}
+		data, err := os.ReadFile(fileName)
+		if err != nil {
+			fmt.Println("Error reading file:", err)
+			return err
+		}
 
-	deps := map[string]int{}
+		var formulas []Formula
+		err = json.Unmarshal(data, &formulas)
+		if err != nil {
+			fmt.Println("Error parsing JSON: ", err)
+			return err
+		}
 
-	for _, formula := range formulas {
-		// BuildDependencies
-		if len(formula.BuildDependencies) > 0 {
-			for _, dep := range formula.BuildDependencies {
-				deps[dep] = deps[dep] + 1
+		deps := map[string]int{}
+
+		for _, formula := range formulas {
+			// BuildDependencies
+			if len(formula.BuildDependencies) > 0 {
+				for _, dep := range formula.BuildDependencies {
+					deps[dep] = deps[dep] + 1
+				}
+			}
+
+			// Dependencies
+			if len(formula.Dependencies) > 0 {
+				for _, dep := range formula.Dependencies {
+					deps[dep] = deps[dep] + 1
+				}
+			}
+			// TestDependencies
+			if len(formula.TestDependencies) > 0 {
+				for _, dep := range formula.TestDependencies {
+					deps[dep] = deps[dep] + 1
+				}
+			}
+			// RecommendedDependencies
+			if len(formula.RecommendedDependencies) > 0 {
+				for _, dep := range formula.RecommendedDependencies {
+					deps[dep] = deps[dep] + 1
+				}
+			}
+			// OptionalDependencies
+			if len(formula.OptionalDependencies) > 0 {
+				for _, dep := range formula.OptionalDependencies {
+					deps[dep] = deps[dep] + 1
+				}
 			}
 		}
 
-		// Dependencies
-		if len(formula.Dependencies) > 0 {
-			for _, dep := range formula.Dependencies {
-				deps[dep] = deps[dep] + 1
-			}
-		}
-		// TestDependencies
-		if len(formula.TestDependencies) > 0 {
-			for _, dep := range formula.TestDependencies {
-				deps[dep] = deps[dep] + 1
-			}
-		}
-		// RecommendedDependencies
-		if len(formula.RecommendedDependencies) > 0 {
-			for _, dep := range formula.RecommendedDependencies {
-				deps[dep] = deps[dep] + 1
-			}
-		}
-		// OptionalDependencies
-		if len(formula.OptionalDependencies) > 0 {
-			for _, dep := range formula.OptionalDependencies {
-				deps[dep] = deps[dep] + 1
-			}
-		}
-	}
+		fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
 
-	fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
+		// sort all languages by the count of their packages
+		kvPairs := make([]KV, 0, len(data))
+		for k, v := range deps {
+			kvPairs = append(kvPairs, KV{k, v})
+		}
+		sort.Slice(kvPairs, func(i, j int) bool {
+			return kvPairs[i].Val > kvPairs[j].Val
+		})
 
-	// sort all languages by the count of their packages
-	kvPairs := make([]KV, 0, len(data))
-	for k, v := range deps {
-		kvPairs = append(kvPairs, KV{k, v})
-	}
-	sort.Slice(kvPairs, func(i, j int) bool {
-		return kvPairs[i].Val > kvPairs[j].Val
-	})
-	for _, pair := range kvPairs {
-		fmt.Println(pair.Key, ":", pair.Val)
+		var allStatisticsStr string
+		for _, pair := range kvPairs {
+			allStatisticsStr += fmt.Sprintf("%v: %v\n", pair.Key, pair.Val)
+		}
+
+		fmt.Println(allStatisticsStr)
+
+		outfile, err := os.Create(allStatisticsCache)
+		if err != nil {
+			return err
+		}
+		defer outfile.Close()
+
+		_, err = outfile.WriteString(allStatisticsStr)
+		if err != nil {
+			return err
+		}
+
+	} else {
+		allStatistics, err := os.ReadFile(allStatisticsCache)
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(allStatistics))
 	}
 
 	return nil
