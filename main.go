@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -63,7 +64,13 @@ gobrew -s             # show all languages and the count of packages which depen
 		} else if statistics {
 			getAllStatistics(coreFormulaeFilePath)
 		} else if lang != "" {
-			getPackageCount(coreFormulaeFilePath, lang)
+			pkgCount, err := getPackageCount(coreFormulaeFilePath, lang)
+			if err != nil {
+				fmt.Println("error: ", err)
+			}
+
+			fmt.Println(pkgCount)
+
 		} else if dependants != "" {
 			getDependants(coreFormulaeFilePath, dependants)
 		} else if version {
@@ -76,7 +83,11 @@ Twitter             : https://x.com/@AbanoubHA
 Developer's Website : https://AbanoubHanna.com`, VERSION)
 		} else {
 			fmt.Println("No language nor build system nor library is specified. Counting packages built in Go (by default):")
-			getPackageCount(coreFormulaeFilePath, "go")
+			pkgCount, err := getPackageCount(coreFormulaeFilePath, "go")
+			if err != nil {
+				fmt.Println("error: ", err)
+			}
+			fmt.Println(pkgCount)
 		}
 	}
 
@@ -126,10 +137,9 @@ func generateSVGChart(fileName, chart string) error {
 	return nil
 }
 
-func getPackageCount(fileName, lang string) {
+func getPackageCount(fileName, lang string) (string, error) {
 	if len(lang) > 30 {
-		fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
-		return
+		return "", fmt.Errorf("error: the language is more than 30 characters long! which is weird! : language=%v", lang)
 	}
 
 	var langCountCache = filepath.Join(cachePath, lang)
@@ -140,32 +150,32 @@ func getPackageCount(fileName, lang string) {
 		}
 		formulas_list, err := getFormulasFromFile(fileName, lang)
 		if err != nil {
-			fmt.Println("Error getting formulas list: ", err)
+			return "", fmt.Errorf("error getting homebrew formulas list: %v", err)
 		}
 		pkgCount := len(formulas_list)
 
 		outFile, err := os.Create(langCountCache)
 		if err != nil {
-			fmt.Println("Error creating file: ", err)
-			return
+			return "", fmt.Errorf("error creating langCountCache (lang is %v) file: %v", lang, err)
 		}
 		defer outFile.Close()
 
 		_, err = outFile.WriteString(fmt.Sprintf("%v", pkgCount))
 		if err != nil {
 			fmt.Println("Error writing to a file: ", err)
-			return
+			return "", fmt.Errorf("error writing to langCountCache file (%v): %v", langCountCache, err)
 		}
 
-		fmt.Println(pkgCount)
+		pkgCountStr := strconv.Itoa(pkgCount)
+
+		return pkgCountStr, nil
 
 	} else {
 		data, err := os.ReadFile(langCountCache)
 		if err != nil {
-			fmt.Println("Error reading langCountCache file: ", err)
-			return
+			return "", fmt.Errorf("error reading langCountCache file (%v): %v", langCountCache, err)
 		}
-		fmt.Println(string(data))
+		return string(data), nil
 	}
 
 }
