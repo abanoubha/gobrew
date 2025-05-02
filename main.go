@@ -132,17 +132,42 @@ func getPackageCount(fileName, lang string) {
 		return
 	}
 
-	// if !isFileFound(fileName) || isFileOld(fileName) {
-	if isFileOld(fileName) { // if true, either old or not found
-		getCoreFormulas(fileName)
-	}
-	formulas_list, err := getFormulasFromFile(fileName, lang)
-	if err != nil {
-		fmt.Println("Error getting formulas list: ", err)
-	}
-	pkgCount := len(formulas_list)
+	var langCountCache = filepath.Join(cachePath, lang)
+	if _, err := os.Stat(langCountCache); os.IsNotExist(err) {
+		// if !isFileFound(fileName) || isFileOld(fileName) {
+		if isFileOld(fileName) { // if true, either old or not found
+			getCoreFormulas(fileName)
+		}
+		formulas_list, err := getFormulasFromFile(fileName, lang)
+		if err != nil {
+			fmt.Println("Error getting formulas list: ", err)
+		}
+		pkgCount := len(formulas_list)
 
-	fmt.Println(pkgCount)
+		outFile, err := os.Create(langCountCache)
+		if err != nil {
+			fmt.Println("Error creating file: ", err)
+			return
+		}
+		defer outFile.Close()
+
+		_, err = outFile.WriteString(fmt.Sprintf("%v", pkgCount))
+		if err != nil {
+			fmt.Println("Error writing to a file: ", err)
+			return
+		}
+
+		fmt.Println(pkgCount)
+
+	} else {
+		data, err := os.ReadFile(langCountCache)
+		if err != nil {
+			fmt.Println("Error reading langCountCache file: ", err)
+			return
+		}
+		fmt.Println(string(data))
+	}
+
 }
 
 func getDependants(fileName, lang string) {
