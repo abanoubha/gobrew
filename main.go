@@ -133,8 +133,39 @@ func generateSVGChart(fileName, chart string) error {
 		langStats[lang] = pkgCount
 	}
 
-	for k, v := range langStats {
-		println(k, v)
+	// Prepare data for the chart
+	var bars []struct {
+		Language string
+		Count    int
+	}
+	for lang, count := range langStats {
+		bars = append(bars, struct {
+			Language string
+			Count    int
+		}{lang, count})
+	}
+
+	// Sort languages by count (descending) for better visualization
+	sort.Slice(bars, func(i, j int) bool {
+		return bars[i].Count > bars[j].Count
+	})
+
+	// Generate terminal bar chart
+	const maxBarWidth = 60
+
+	// Find the maximum count for scaling
+	maxCount := 0
+	for _, bar := range bars {
+		if bar.Count > maxCount {
+			maxCount = bar.Count
+		}
+
+	}
+
+	for _, bar := range bars {
+		barLength := int(float64(bar.Count) / float64(maxCount) * float64(maxBarWidth))
+		barStr := strings.Repeat("░", barLength)
+		fmt.Printf("%-10s %s %d\n\n", bar.Language, barStr, bar.Count)
 	}
 
 	return nil
