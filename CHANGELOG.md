@@ -37,7 +37,11 @@ This page shows the roadmap with versioned tasks along with releases.
 
 - support all platforms & archs by letting snapcraft build dashboard handle the build process
 
+## 25.06.26
+
+- output chart of specified programming languages into terminal (stdout)
+- save the chart as SVG in the current working directory
+
 ## next
 
-- output SVG chart of specified programming languages
 - get statistics from APT package manager too
