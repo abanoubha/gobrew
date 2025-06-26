@@ -168,7 +168,78 @@ func generateSVGChart(fileName, chart string) error {
 		fmt.Printf("%-10s %s %d\n\n", bar.Language, barStr, bar.Count)
 	}
 
+	// Generate SVG chart
+	var (
+		barHeight   int = 30
+		barPadding  int = 10
+		graphWidth  int = 600
+		graphHeight int = 500 // Will be adjusted based on the number of languages
+		labelWidth  int = 100
+	)
+
+	// Adjust graph height based on the number of languages
+	graphHeight = len(bars)*(barHeight+barPadding) + 50 // Add some padding at the top and bottom
+
+	var svg strings.Builder
+	svg.WriteString(fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight))
+
+	// Find the maximum count for scaling
+	maxCount = 0
+	for _, bar := range bars {
+		if bar.Count > maxCount {
+			maxCount = bar.Count
+		}
+	}
+
+	// Draw bars and labels
+	for i, bar := range bars {
+		y := i*(barHeight+barPadding) + barPadding + 20 // Adjusted y position for top padding
+		barWidth := int(float64(bar.Count) / float64(maxCount) * float64(graphWidth))
+
+		// Draw bar
+		svg.WriteString(fmt.Sprintf(`<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight))
+
+		// Draw language label
+		svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%s</text>`, labelWidth-90, y, barHeight/2+5, bar.Language))
+
+		// Draw count label
+		svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%d</text>`, labelWidth+barWidth-38, y, barHeight/2+5, bar.Count))
+	}
+
+	// Add X-axis label
+	svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="16">Package Count</text>`, labelWidth+graphWidth/2, graphHeight-10))
+
+	languages_vs := strings.ReplaceAll(chart, ",", " vs ")
+
+	// Add title
+	svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text>`, (graphWidth+labelWidth)/2, 20, languages_vs))
+
+	svg.WriteString(`</svg>`)
+
+	languages := strings.ReplaceAll(chart, ",", "-")
+	timestamp := time.Now().Format("_2006-01-02_15-04-05.svg")
+	err := SaveToFile(languages+timestamp, svg.String())
+
+	if err != nil {
+		return fmt.Errorf("error saving SVG file: %w", err)
+	}
+
 	return nil
+}
+
+func SaveToFile(filename, content string) error {
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(content)
+	if err != nil {
+		return err
+	}
+
+	return file.Sync()
 }
 
 func getPackageCount(fileName, lang string) (string, error) {
