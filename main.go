@@ -443,7 +443,7 @@ func getAllBuildDeps(fileName string) error {
 			return err
 		}
 
-		buildDeps := map[interface{}]struct{}{}
+		buildDeps := map[any]struct{}{}
 
 		for _, formula := range formulas {
 			if len(formula.BuildDependencies) > 0 {
