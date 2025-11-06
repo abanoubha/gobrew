@@ -370,7 +370,7 @@ func getFormulasFromFile(fileName, langName string) (map[any]string, error) {
 		return nil, err
 	}
 
-	allFormulas := map[interface{}]string{}
+	allFormulas := map[any]string{}
 
 	for _, formula := range formulas {
 
