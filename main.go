@@ -356,7 +356,7 @@ type Formula struct {
 	// Variations              interface{}            `json:"variations"`
 }
 
-func getFormulasFromFile(fileName, langName string) (map[interface{}]string, error) {
+func getFormulasFromFile(fileName, langName string) (map[any]string, error) {
 	data, err := os.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
