@@ -42,6 +42,12 @@ This page shows the roadmap with versioned tasks along with releases.
 - output chart of specified programming languages into terminal (stdout)
 - save the chart as SVG in the current working directory
 
+## 25.11.06
+
+- upgrade Go version
+- upgrade dependency (cobra)
+- refactor code for better performance and being succinct
+
 ## next
 
 - get statistics from APT package manager too
