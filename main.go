@@ -109,9 +109,9 @@ func generateSVGChart(fileName, chart string) error {
 
 	langStats := make(map[string]int)
 
-	langs := strings.Split(chart, ",")
+	langs := strings.SplitSeq(chart, ",")
 
-	for _, lang := range langs {
+	for lang := range langs {
 		if len(lang) > 30 {
 			fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
 			break
