@@ -265,7 +265,7 @@ func getPackageCount(fileName, lang string) (string, error) {
 		}
 		defer outFile.Close()
 
-		_, err = outFile.WriteString(fmt.Sprintf("%v", pkgCount))
+		_, err = fmt.Fprintf(outFile, "%v", pkgCount)
 		if err != nil {
 			fmt.Println("Error writing to a file: ", err)
 			return "", fmt.Errorf("error writing to langCountCache file (%v): %v", langCountCache, err)
