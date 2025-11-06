@@ -583,7 +583,7 @@ func getAllStatistics(fileName string) error {
 	return nil
 }
 
-func getKeysAsString(m map[interface{}]struct{}) []string {
+func getKeysAsString(m map[any]struct{}) []string {
 	var keys []string
 	for k := range m {
 		keys = append(keys, fmt.Sprintf("%v", k))
