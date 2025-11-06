@@ -4,6 +4,7 @@
 # executable
 gobrew
 snap/gobrew*.snap
+gobrew-*
 
 # result files & data
 core_formulas.json
