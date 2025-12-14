@@ -305,39 +305,18 @@ func getAllStatistics(fileName string) error {
 		}
 
 		deps := map[string]int{}
+		countDeps := func(list []string) {
+			for _, dep := range list {
+				deps[dep]++
+			}
+		}
 
 		for _, formula := range formulas {
-			// BuildDependencies
-			if len(formula.BuildDependencies) > 0 {
-				for _, dep := range formula.BuildDependencies {
-					deps[dep] = deps[dep] + 1
-				}
-			}
-
-			// Dependencies
-			if len(formula.Dependencies) > 0 {
-				for _, dep := range formula.Dependencies {
-					deps[dep] = deps[dep] + 1
-				}
-			}
-			// TestDependencies
-			if len(formula.TestDependencies) > 0 {
-				for _, dep := range formula.TestDependencies {
-					deps[dep] = deps[dep] + 1
-				}
-			}
-			// RecommendedDependencies
-			if len(formula.RecommendedDependencies) > 0 {
-				for _, dep := range formula.RecommendedDependencies {
-					deps[dep] = deps[dep] + 1
-				}
-			}
-			// OptionalDependencies
-			if len(formula.OptionalDependencies) > 0 {
-				for _, dep := range formula.OptionalDependencies {
-					deps[dep] = deps[dep] + 1
-				}
-			}
+			countDeps(formula.BuildDependencies)
+			countDeps(formula.Dependencies)
+			countDeps(formula.TestDependencies)
+			countDeps(formula.RecommendedDependencies)
+			countDeps(formula.OptionalDependencies)
 		}
 
 		fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
