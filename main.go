@@ -101,7 +101,10 @@ func generateSVGChart(fileName, chart string) error {
 	// Draw bars and labels
 	for i, bar := range bars {
 		y := i*(barHeight+barPadding) + barPadding + 20 // Adjusted y position for top padding
-		barWidth := int(float64(bar.Count) / float64(maxCount) * float64(graphWidth))
+		barWidth := 0
+		if maxCount > 0 {
+			barWidth = int(float64(bar.Count) / float64(maxCount) * float64(graphWidth))
+		}
 
 		// Draw bar
 		svg.WriteString(fmt.Sprintf(`<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight))
