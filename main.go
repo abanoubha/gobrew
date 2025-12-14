@@ -30,6 +30,7 @@ var (
 	lang       string
 	dependants string
 	chart      string
+	report     string
 )
 
 func main() {
@@ -50,6 +51,8 @@ func main() {
 	rootCmd.Flags().StringVarP(&dependants, "dependants", "d", "", "show all dependants of certain language/build-system/library")
 
 	rootCmd.Flags().StringVarP(&chart, "chart", "c", "", "create an SVG chart for statistics of specified languages")
+
+	rootCmd.Flags().StringVarP(&report, "report", "r", "go", "show a report of usage statistics of the specified language")
 
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		if buildDep {
@@ -76,6 +79,83 @@ func main() {
 
 		} else if dependants != "" {
 			getDependants(coreFormulaeFilePath, dependants)
+		} else if report != "" {
+			// start of 'report'
+			// pkgCount, err := getPackageCount(coreFormulaeFilePath, report)
+			// if err != nil {
+			// 	fmt.Println("error: ", err)
+			// }
+			if len(report) > 30 {
+				fmt.Printf("error: the language is more than 30 characters long! which is weird! : language=%s", report)
+				return
+			}
+
+			var pkgN string
+
+			var langCountCache = filepath.Join(cachePath, report)
+			if _, err := os.Stat(langCountCache); os.IsNotExist(err) {
+				// if !isFileFound(fileName) || isFileOld(fileName) {
+				if isFileOld(coreFormulaeFilePath) { // if true, either old or not found
+					getCoreFormulas(coreFormulaeFilePath)
+				}
+				formulas_list, err := getFormulasFromFile(coreFormulaeFilePath, report)
+				if err != nil {
+					fmt.Printf("error getting homebrew formulas list: %v", err)
+					return
+				}
+				pkgCount := len(formulas_list)
+
+				outFile, err := os.Create(langCountCache)
+				if err != nil {
+					fmt.Printf("error creating langCountCache (lang is %v) file: %v", report, err)
+					return
+				}
+				defer outFile.Close()
+
+				_, err = fmt.Fprintf(outFile, "%v", pkgCount)
+				if err != nil {
+					fmt.Println("Error writing to a file: ", err)
+					fmt.Printf("error writing to langCountCache file (%v): %v", langCountCache, err)
+					return
+				}
+
+				pkgN = strconv.Itoa(pkgCount)
+
+			} else {
+				data, err := os.ReadFile(langCountCache)
+				if err != nil {
+					fmt.Printf("error reading langCountCache file (%v): %v", langCountCache, err)
+					return
+				}
+				pkgN = string(data)
+			}
+
+			fmt.Printf(
+				"## Statistics of %s programming language\n\nNumber of CLI apps written in %s and distributed via Homebrew Core Formulae is %s apps.\n\n",
+				report,
+				report,
+				pkgN,
+			)
+
+			// getDependants(coreFormulaeFilePath, report)
+
+			// if !isFileFound(fileName) || isFileOld(fileName) {
+			if isFileOld(coreFormulaeFilePath) { // if true, either old or not found
+				getCoreFormulas(coreFormulaeFilePath)
+			}
+
+			formulas_list, err := getFormulasFromFile(coreFormulaeFilePath, report)
+			if err != nil {
+				fmt.Println("Error getting formulas list: ", err)
+			}
+
+			fmt.Printf("\n### Apps written in %s and distributed via Homebrew Core Formulae\n\n", report)
+
+			for k, v := range formulas_list {
+				fmt.Println("-", k, ":", v)
+			}
+			// end of 'report'
+
 		} else if version {
 			fmt.Printf(`
 gobrew v%v
