@@ -189,59 +189,46 @@ func printDependants(fileName, lang string) {
 }
 
 func getAllBuildDeps(fileName string) error {
-	var allBuildDepsCache = filepath.Join(cachePath, "allBuildDepsCache")
-	if _, err := os.Stat(allBuildDepsCache); os.IsNotExist(err) {
+	if err := ensureFileExists(fileName); err != nil {
+		return err
+	}
 
-		if isFileOld(fileName) { // if true, either old or not found
-			getCoreFormulas(fileName)
+	cacheFile := filepath.Join(cachePath, "allBuildDepsCache")
+	if _, err := os.Stat(cacheFile); err == nil {
+		data, err := os.ReadFile(cacheFile)
+		if err == nil {
+			fmt.Println(string(data))
+			return nil
 		}
+	}
 
-		data, err := os.ReadFile(fileName)
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return err
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+
+	var formulas []Formula
+	if err := json.Unmarshal(data, &formulas); err != nil {
+		return err
+	}
+
+	buildDeps := map[string]struct{}{}
+	for _, f := range formulas {
+		for _, dep := range f.BuildDependencies {
+			buildDeps[dep] = struct{}{}
 		}
+	}
 
-		var formulas []Formula
-		err = json.Unmarshal(data, &formulas)
-		if err != nil {
-			fmt.Println("Error parsing JSON: ", err)
-			return err
-		}
+	var keys []string
+	for k := range buildDeps {
+		keys = append(keys, k)
+	}
 
-		buildDeps := map[any]struct{}{}
+	output := fmt.Sprintf("All Build Dependencies Count: %v\n%v", len(keys), keys)
+	fmt.Println(output)
 
-		for _, formula := range formulas {
-			if len(formula.BuildDependencies) > 0 {
-				for _, dep := range formula.BuildDependencies {
-					buildDeps[dep] = struct{}{}
-				}
-			}
-		}
-
-		allBuildDeps := getKeysAsString(buildDeps)
-
-		allbuildDepsStr := fmt.Sprintf("All Build Dependencies Count: %v\n%v", len(allBuildDeps), allBuildDeps)
-
-		fmt.Println(allbuildDepsStr)
-
-		outfile, err := os.Create(allBuildDepsCache)
-		if err != nil {
-			return err
-		}
-		defer outfile.Close()
-
-		_, err = outfile.WriteString(allbuildDepsStr)
-		if err != nil {
-			return err
-		}
-
-	} else {
-		allBuildDeps, err := os.ReadFile(allBuildDepsCache)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(allBuildDeps))
+	if err := saveToFile(cacheFile, output); err != nil {
+		fmt.Println("error caching:", err)
 	}
 
 	return nil
@@ -314,14 +301,6 @@ func getAllStatistics(fileName string) error {
 	}
 
 	return nil
-}
-
-func getKeysAsString(m map[any]struct{}) []string {
-	var keys []string
-	for k := range m {
-		keys = append(keys, fmt.Sprintf("%v", k))
-	}
-	return keys
 }
 
 // func getFormulaInfo(f string) {
