@@ -48,6 +48,10 @@ This page shows the roadmap with versioned tasks along with releases.
 - upgrade dependency (cobra)
 - refactor code for better performance and being succinct
 
+## 25.12.14
+
+- upgrade *Cobra* CLI dependency/dep/lib/pkg.
+
 ## next
 
 - get statistics from APT package manager too
