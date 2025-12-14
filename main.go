@@ -60,15 +60,13 @@ func generateSVGChart(fileName, chart string) error {
 	}
 
 	// Prepare data for the chart
-	var bars []struct {
+	type bar struct {
 		Language string
 		Count    int
 	}
+	var bars []bar
 	for lang, count := range langStats {
-		bars = append(bars, struct {
-			Language string
-			Count    int
-		}{lang, count})
+		bars = append(bars, bar{lang, count})
 	}
 
 	// Sort languages by count (descending) for better visualization
