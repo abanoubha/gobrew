@@ -56,9 +56,7 @@ func generateSVGChart(fileName, chart string) error {
 			fmt.Println("Error getting formulas list: ", err)
 		}
 
-		pkgCount := len(formulas_list)
-
-		langStats[lang] = pkgCount
+		langStats[lang] = len(formulas_list)
 	}
 
 	// Prepare data for the chart
