@@ -137,42 +137,33 @@ func getPackageCount(fileName, lang string) (string, error) {
 		return "", fmt.Errorf("error: the language is more than 30 characters long! which is weird! : language=%v", lang)
 	}
 
-	var langCountCache = filepath.Join(cachePath, lang)
-	if _, err := os.Stat(langCountCache); os.IsNotExist(err) {
-		// if !isFileFound(fileName) || isFileOld(fileName) {
-		if isFileOld(fileName) { // if true, either old or not found
-			getCoreFormulas(fileName)
-		}
-		formulas_list, err := getFormulasFromFile(fileName, lang)
-		if err != nil {
-			return "", fmt.Errorf("error getting homebrew formulas list: %v", err)
-		}
-		pkgCount := len(formulas_list)
-
-		outFile, err := os.Create(langCountCache)
-		if err != nil {
-			return "", fmt.Errorf("error creating langCountCache (lang is %v) file: %v", lang, err)
-		}
-		defer outFile.Close()
-
-		_, err = fmt.Fprintf(outFile, "%v", pkgCount)
-		if err != nil {
-			fmt.Println("Error writing to a file: ", err)
-			return "", fmt.Errorf("error writing to langCountCache file (%v): %v", langCountCache, err)
-		}
-
-		pkgCountStr := strconv.Itoa(pkgCount)
-
-		return pkgCountStr, nil
-
-	} else {
-		data, err := os.ReadFile(langCountCache)
-		if err != nil {
-			return "", fmt.Errorf("error reading langCountCache file (%v): %v", langCountCache, err)
-		}
-		return string(data), nil
+	if err := ensureFileExists(fileName); err != nil {
+		return "", err
 	}
 
+	langCountCache := filepath.Join(cachePath, lang)
+
+	if _, err := os.Stat(langCountCache); err == nil {
+		data, err := os.ReadFile(langCountCache)
+		if err == nil {
+			return string(data), nil
+		}
+	}
+
+	// calculate if cache missing
+	formulasList, err := getFormulasFromFile(fileName, lang)
+	if err != nil {
+		return "", fmt.Errorf("error getting homebrew formulas list: %w", err)
+	}
+
+	pkgCount := len(formulasList)
+	pkgCountStr := strconv.Itoa(pkgCount)
+
+	if err := saveToFile(langCountCache, pkgCountStr); err != nil {
+		fmt.Printf("error caching: %w\n", err)
+	}
+
+	return pkgCountStr, nil
 }
 
 func getDependants(fileName, lang string) {
@@ -390,14 +381,11 @@ func getKeysAsString(m map[any]struct{}) []string {
 // 	return true
 // }
 
-func getCoreFormulas(fileName string) {
+func getCoreFormulas(fileName string) error {
 	resp, err := http.Get("https://formulae.brew.sh/api/formula.json")
-
 	if err != nil {
-		fmt.Println("Error: can not reach API endpoint", err.Error())
-		return
+		return fmt.Errorf("error: can not reach API endpoint: %w", err)
 	}
-
 	defer resp.Body.Close()
 
 	//body, err := io.ReadAll(resp.Body)
@@ -409,26 +397,21 @@ func getCoreFormulas(fileName string) {
 	if _, err := os.Stat(cachePath); os.IsNotExist(err) {
 		err = os.Mkdir(cachePath, 0755)
 		if err != nil {
-			fmt.Println("Error creating '~/.gobrew' directory: ", err.Error())
-			return
+			return fmt.Errorf("error creating '%s' directory: %w", cachePath, err)
 		}
 	}
 
 	outFile, err := os.Create(fileName) //os.CreateTemp("", fileName)
-
 	if err != nil {
-		fmt.Println("Error creating file: ", err.Error())
-		return
+		return fmt.Errorf("error creating file: %w", err)
 	}
-
 	defer outFile.Close()
 
 	_, err = io.Copy(outFile, resp.Body)
-
 	if err != nil {
-		fmt.Println("Error writing to a file: ", err.Error())
-		return
+		return fmt.Errorf("error writing to a file: %w", err)
 	}
 
 	fmt.Println("successfully written JSON data into ", fileName)
+	return nil
 }

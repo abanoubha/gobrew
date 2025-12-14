@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+func ensureFileExists(fileName string) error {
+	if isFileOld(fileName) {
+		return getCoreFormulas(fileName)
+	}
+	return nil
+}
+
 type Formula struct {
 	Name                    string   `json:"name"`
 	BuildDependencies       []string `json:"build_dependencies"`
