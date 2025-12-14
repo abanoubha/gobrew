@@ -88,16 +88,12 @@ func generateSVGChart(fileName, chart string) error {
 	}
 
 	// Generate SVG chart
-	var (
-		barHeight   int = 30
-		barPadding  int = 10
-		graphWidth  int = 600
-		graphHeight int = 500 // Will be adjusted based on the number of languages
-		labelWidth  int = 100
-	)
 
-	// Adjust graph height based on the number of languages
-	graphHeight = len(bars)*(barHeight+barPadding) + 50 // Add some padding at the top and bottom
+	barHeight := 30
+	barPadding := 10
+	graphWidth := 600
+	labelWidth := 100
+	graphHeight := len(bars)*(barHeight+barPadding) + 50 // Add some padding at the top and bottom
 
 	var svg strings.Builder
 	svg.WriteString(fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight))
