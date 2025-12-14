@@ -84,8 +84,7 @@ func generateSVGChart(fileName, chart string) error {
 
 	for _, bar := range bars {
 		barLength := int(float64(bar.Count) / float64(maxCount) * float64(maxBarWidth))
-		barStr := strings.Repeat("░", barLength)
-		fmt.Printf("%-10s %s %d\n\n", bar.Language, barStr, bar.Count)
+		fmt.Printf("%-10s %s %d\n\n", bar.Language, strings.Repeat("░", barLength), bar.Count)
 	}
 
 	// Generate SVG chart
