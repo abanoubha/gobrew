@@ -66,7 +66,7 @@ Developer's Website : https://AbanoubHanna.com`, VERSION)
 		}
 
 		if flagDependants != "" {
-			getDependants(coreFormulaeFilePath, flagDependants)
+			printDependants(coreFormulaeFilePath, flagDependants)
 			return
 		}
 

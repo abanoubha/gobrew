@@ -166,24 +166,25 @@ func getPackageCount(fileName, lang string) (string, error) {
 	return pkgCountStr, nil
 }
 
-func getDependants(fileName, lang string) {
+func printDependants(fileName, lang string) {
 	if len(lang) > 30 {
 		fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
 		return
 	}
 
-	// if !isFileFound(fileName) || isFileOld(fileName) {
-	if isFileOld(fileName) { // if true, either old or not found
-		getCoreFormulas(fileName)
+	if err := ensureFileExists(fileName); err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	formulas_list, err := getFormulasFromFile(fileName, lang)
+	formulasList, err := getFormulasFromFile(fileName, lang)
 	if err != nil {
 		fmt.Println("Error getting formulas list: ", err)
+		return
 	}
 
-	for k, v := range formulas_list {
-		fmt.Println("\n", k, ":\n  ", v)
+	for k, v := range formulasList {
+		fmt.Printf("\n%s:\n %s\n", k, v)
 	}
 }
 
