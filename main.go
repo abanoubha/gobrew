@@ -65,8 +65,13 @@ func generateSVGChart(fileName, chart string) error {
 		Count    int
 	}
 	var bars []bar
+	maxCount := 0
+
 	for lang, count := range langStats {
 		bars = append(bars, bar{lang, count})
+		if count > maxCount {
+			maxCount = count
+		}
 	}
 
 	// Sort languages by count (descending) for better visualization
@@ -76,15 +81,6 @@ func generateSVGChart(fileName, chart string) error {
 
 	// Generate terminal bar chart
 	const maxBarWidth = 60
-
-	// Find the maximum count for scaling
-	maxCount := 0
-	for _, bar := range bars {
-		if bar.Count > maxCount {
-			maxCount = bar.Count
-		}
-
-	}
 
 	for _, bar := range bars {
 		barLength := int(float64(bar.Count) / float64(maxCount) * float64(maxBarWidth))
