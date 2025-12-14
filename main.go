@@ -122,9 +122,7 @@ func generateSVGChart(fileName, chart string) error {
 	languages_vs := strings.ReplaceAll(chart, ",", " vs ")
 
 	// Add title
-	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text>`, (graphWidth+labelWidth)/2, 20, languages_vs)
-
-	svg.WriteString(`</svg>`)
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text></svg>`, (graphWidth+labelWidth)/2, 20, languages_vs)
 
 	languages := strings.ReplaceAll(chart, ",", "-")
 	timestamp := time.Now().Format("_2006-01-02_15-04-05.svg")
