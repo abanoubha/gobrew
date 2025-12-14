@@ -298,28 +298,13 @@ func generateSVGChart(fileName, chart string) error {
 
 	languages := strings.ReplaceAll(chart, ",", "-")
 	timestamp := time.Now().Format("_2006-01-02_15-04-05.svg")
-	err := SaveToFile(languages+timestamp, svg.String())
+	err := saveToFile(languages+timestamp, svg.String())
 
 	if err != nil {
 		return fmt.Errorf("error saving SVG file: %w", err)
 	}
 
 	return nil
-}
-
-func SaveToFile(filename, content string) error {
-	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	_, err = file.WriteString(content)
-	if err != nil {
-		return err
-	}
-
-	return file.Sync()
 }
 
 func getPackageCount(fileName, lang string) (string, error) {
@@ -758,16 +743,4 @@ func getCoreFormulas(fileName string) {
 	}
 
 	fmt.Println("successfully written JSON data into ", fileName)
-}
-
-func isFileOld(filePath string) bool {
-	fileInfo, err := os.Stat(filePath)
-	if err != nil {
-		// file not found
-		return true // consider it old, so we'll re-download it
-	}
-
-	sevenDaysAgo := time.Now().AddDate(0, 0, -7)
-
-	return fileInfo.ModTime().Before(sevenDaysAgo)
 }
