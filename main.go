@@ -280,7 +280,7 @@ func getAllStatistics(fileName string) error {
 	}
 
 	// sort all languages by the count of their packages
-	kvPairs := make([]KV, 0, len(data))
+	kvPairs := make([]KV, 0, len(deps))
 	for k, v := range deps {
 		kvPairs = append(kvPairs, KV{k, v})
 	}
