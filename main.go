@@ -39,24 +39,24 @@ func generateSVGChart(fileName, chart string) error {
 
 	langs := strings.SplitSeq(chart, ",")
 
+	if err := ensureFileExists(fileName); err != nil {
+		return err
+	}
+
 	for lang := range langs {
+		lang = strings.TrimSpace(lang)
 		if len(lang) > 30 {
 			fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
 			break
 		}
 
-		// if !isFileFound(fileName) || isFileOld(fileName) {
-		if isFileOld(fileName) { // if true, either old or not found
-			getCoreFormulas(fileName)
-		}
-
-		formulas_list, err := getFormulasFromFile(fileName, lang)
-
+		formulasList, err := getFormulasFromFile(fileName, lang)
 		if err != nil {
 			fmt.Println("Error getting formulas list: ", err)
+			return err
 		}
 
-		langStats[lang] = len(formulas_list)
+		langStats[lang] = len(formulasList)
 	}
 
 	// Prepare data for the chart
@@ -88,7 +88,6 @@ func generateSVGChart(fileName, chart string) error {
 	}
 
 	// Generate SVG chart
-
 	barHeight := 30
 	barPadding := 10
 	graphWidth := 600
