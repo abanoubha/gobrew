@@ -98,14 +98,6 @@ func generateSVGChart(fileName, chart string) error {
 	var svg strings.Builder
 	fmt.Fprintf(&svg, `<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight)
 
-	// Find the maximum count for scaling
-	maxCount = 0
-	for _, bar := range bars {
-		if bar.Count > maxCount {
-			maxCount = bar.Count
-		}
-	}
-
 	// Draw bars and labels
 	for i, bar := range bars {
 		y := i*(barHeight+barPadding) + barPadding + 20 // Adjusted y position for top padding
