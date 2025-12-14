@@ -107,22 +107,22 @@ func generateSVGChart(fileName, chart string) error {
 		}
 
 		// Draw bar
-		svg.WriteString(fmt.Sprintf(`<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight))
+		fmt.Fprintf(&svg, `<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight)
 
 		// Draw language label
-		svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%s</text>`, labelWidth-90, y, barHeight/2+5, bar.Language))
+		fmt.Fprintf(&svg, `<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%s</text>`, labelWidth-90, y, barHeight/2+5, bar.Language)
 
 		// Draw count label
-		svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%d</text>`, labelWidth+barWidth-38, y, barHeight/2+5, bar.Count))
+		fmt.Fprintf(&svg, `<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%d</text>`, labelWidth+barWidth-38, y, barHeight/2+5, bar.Count)
 	}
 
 	// Add X-axis label
-	svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="16">Package Count</text>`, labelWidth+graphWidth/2, graphHeight-10))
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="16">Package Count</text>`, labelWidth+graphWidth/2, graphHeight-10)
 
 	languages_vs := strings.ReplaceAll(chart, ",", " vs ")
 
 	// Add title
-	svg.WriteString(fmt.Sprintf(`<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text>`, (graphWidth+labelWidth)/2, 20, languages_vs))
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text>`, (graphWidth+labelWidth)/2, 20, languages_vs)
 
 	svg.WriteString(`</svg>`)
 
