@@ -96,7 +96,7 @@ func generateSVGChart(fileName, chart string) error {
 	graphHeight := len(bars)*(barHeight+barPadding) + 50 // Add some padding at the top and bottom
 
 	var svg strings.Builder
-	svg.WriteString(fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight))
+	fmt.Fprintf(&svg, `<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight)
 
 	// Find the maximum count for scaling
 	maxCount = 0
