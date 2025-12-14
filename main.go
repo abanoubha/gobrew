@@ -159,7 +159,7 @@ func getPackageCount(fileName, lang string) (string, error) {
 	pkgCountStr := strconv.Itoa(pkgCount)
 
 	if err := saveToFile(langCountCache, pkgCountStr); err != nil {
-		fmt.Printf("error caching: %w\n", err)
+		fmt.Println("error caching:", err)
 	}
 
 	return pkgCountStr, nil
