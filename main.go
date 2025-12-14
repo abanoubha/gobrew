@@ -247,82 +247,70 @@ func getAllBuildDeps(fileName string) error {
 	return nil
 }
 
-type KV struct {
-	Key string
-	Val int
-}
-
 func getAllStatistics(fileName string) error {
-	var allStatisticsCache = filepath.Join(cachePath, "allStatisticsCache")
-	if _, err := os.Stat(allStatisticsCache); os.IsNotExist(err) {
+	if err := ensureFileExists(fileName); err != nil {
+		return err
+	}
 
-		if isFileOld(fileName) { // if true, either old or not found
-			getCoreFormulas(fileName)
+	statCache := filepath.Join(cachePath, "allStatisticsCache")
+	if _, err := os.Stat(statCache); err == nil {
+		data, err := os.ReadFile(statCache)
+		if err == nil {
+			fmt.Println(string(data))
+			return nil
 		}
+	}
 
-		data, err := os.ReadFile(fileName)
-		if err != nil {
-			fmt.Println("Error reading file:", err)
-			return err
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+
+	var formulas []Formula
+	if err = json.Unmarshal(data, &formulas); err != nil {
+		return err
+	}
+
+	deps := map[string]int{}
+	countDeps := func(list []string) {
+		for _, dep := range list {
+			deps[dep]++
 		}
+	}
 
-		var formulas []Formula
-		err = json.Unmarshal(data, &formulas)
-		if err != nil {
-			fmt.Println("Error parsing JSON: ", err)
-			return err
-		}
+	for _, formula := range formulas {
+		countDeps(formula.BuildDependencies)
+		countDeps(formula.Dependencies)
+		countDeps(formula.TestDependencies)
+		countDeps(formula.RecommendedDependencies)
+		countDeps(formula.OptionalDependencies)
+	}
 
-		deps := map[string]int{}
-		countDeps := func(list []string) {
-			for _, dep := range list {
-				deps[dep]++
-			}
-		}
+	fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
 
-		for _, formula := range formulas {
-			countDeps(formula.BuildDependencies)
-			countDeps(formula.Dependencies)
-			countDeps(formula.TestDependencies)
-			countDeps(formula.RecommendedDependencies)
-			countDeps(formula.OptionalDependencies)
-		}
+	type KV struct {
+		Key string
+		Val int
+	}
 
-		fmt.Println("# of all languages/libraries/frameworks: ", len(deps))
+	// sort all languages by the count of their packages
+	kvPairs := make([]KV, 0, len(data))
+	for k, v := range deps {
+		kvPairs = append(kvPairs, KV{k, v})
+	}
+	sort.Slice(kvPairs, func(i, j int) bool {
+		return kvPairs[i].Val > kvPairs[j].Val
+	})
 
-		// sort all languages by the count of their packages
-		kvPairs := make([]KV, 0, len(data))
-		for k, v := range deps {
-			kvPairs = append(kvPairs, KV{k, v})
-		}
-		sort.Slice(kvPairs, func(i, j int) bool {
-			return kvPairs[i].Val > kvPairs[j].Val
-		})
+	var result string
+	for _, pair := range kvPairs {
+		result += fmt.Sprintf("%v: %v\n", pair.Key, pair.Val)
+	}
 
-		var allStatisticsStr string
-		for _, pair := range kvPairs {
-			allStatisticsStr += fmt.Sprintf("%v: %v\n", pair.Key, pair.Val)
-		}
+	fmt.Println(result)
 
-		fmt.Println(allStatisticsStr)
-
-		outfile, err := os.Create(allStatisticsCache)
-		if err != nil {
-			return err
-		}
-		defer outfile.Close()
-
-		_, err = outfile.WriteString(allStatisticsStr)
-		if err != nil {
-			return err
-		}
-
-	} else {
-		allStatistics, err := os.ReadFile(allStatisticsCache)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(allStatistics))
+	if err := saveToFile(statCache, result); err != nil {
+		fmt.Println("error caching: ", err)
 	}
 
 	return nil
