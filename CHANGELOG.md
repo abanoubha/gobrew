@@ -52,6 +52,11 @@ This page shows the roadmap with versioned tasks along with releases.
 
 - upgrade *Cobra* CLI dependency/dep/lib/pkg.
 
+## 25.12.15
+
+- show a detailed report of a language
+- refactor codebase into a more modular idiomatic separate files
+
 ## next
 
 - get statistics from APT package manager too
