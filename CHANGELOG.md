@@ -57,6 +57,10 @@ This page shows the roadmap with versioned tasks along with releases.
 - show a detailed report of a language
 - refactor codebase into a more modular idiomatic separate files
 
+## 260206
+
+- bug fixes and refactoring
+
 ## next
 
 - get statistics from APT package manager too
