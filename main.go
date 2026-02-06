@@ -128,6 +128,8 @@ func generateSVGChart(fileName, chart string) error {
 		return fmt.Errorf("error saving SVG file: %w", err)
 	}
 
+	fmt.Println("[info] saved the generated SVG chart in", filename2save)
+
 	return nil
 }
 
