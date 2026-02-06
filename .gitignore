@@ -5,6 +5,7 @@
 gobrew
 snap/gobrew*.snap
 gobrew-*
+dist
 
 # result files & data
 core_formulas.json
