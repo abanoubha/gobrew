@@ -14,6 +14,16 @@ go install github.com/abanoubha/gobrew@latest
 
 ## build executables of all operating systems / platforms
 
+Just use the `build-all.sh` POSIX compliant bash script, like this:
+
+```sh
+sh scripts/build-all.sh v260205
+```
+
+`v260205` is the version of release you're building/compiling. The output executable files will be `gobrew-OS-ARCH-VERSION`.
+
+Or you can use direct commands like this:
+
 ```sh
 # linux 64 bit (current os)
 go build -o gobrew-linux-x64 .
