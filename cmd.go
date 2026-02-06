@@ -90,12 +90,12 @@ Developer's Website : https://AbanoubHanna.com`, VERSION)
 		}
 
 		if countI < 1 {
-			fmt.Printf("There is NO language/package named %s", targetLang)
+			fmt.Printf("There is NO language/library named %s", targetLang)
 			return
 		}
 
 		fmt.Printf(
-			"## Statistics of %s programming language\n\nNumber of CLI apps written in %s and distributed via Homebrew Core Formulae is %s apps.\n\n",
+			"## Statistics of %s language/library\n\nNumber of CLI apps depend on %s and distributed via Homebrew Core Formulae is %s apps.\n\n",
 			targetLang,
 			targetLang,
 			count,
@@ -106,7 +106,7 @@ Developer's Website : https://AbanoubHanna.com`, VERSION)
 			fmt.Println("Error getting formulas list: ", err)
 		}
 
-		fmt.Printf("\n### Apps written in %s and distributed via Homebrew Core Formulae\n\n", targetLang)
+		fmt.Printf("\n### Apps that depend on %s and distributed via Homebrew Core Formulae\n\n", targetLang)
 
 		for k, v := range formulas {
 			fmt.Println("-", k, ":", v)
