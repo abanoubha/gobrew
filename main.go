@@ -182,6 +182,11 @@ func printDependants(fileName, lang string) {
 		return
 	}
 
+	if len(formulasList) < 1 {
+		fmt.Println("No dependants for", lang)
+		return
+	}
+
 	for k, v := range formulasList {
 		fmt.Printf("\n%s:\n %s\n", k, v)
 	}
