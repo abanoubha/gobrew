@@ -43,6 +43,38 @@ curl -fsSL https://raw.githubusercontent.com/abanoubha/gobrew/main/scripts/insta
 $ go mod tidy && go build -o gobrew .
 ```
 
+## uninstall gobrew
+
+- Remove gobrew executable using the script:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/abanoubha/gobrew/main/scripts/uninstall.sh | sh
+```
+
+If you want to specify the installation directory/folder, add `INSTALL_DIR="/usr/local/bin"` to before bash like this:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/abanoubha/gobrew/main/scripts/uninstall.sh | INSTALL_DIR="/usr/local/bin" sh
+```
+
+If you have renamed the executable/binary, specify it with `INSTALL_NAME="gobrew"` like this:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/abanoubha/gobrew/main/scripts/uninstall.sh | INSTALL_NAME="gobrew" INSTALL_DIR="/usr/local/bin" sh
+```
+
+- if you install gobrew via _snap_:
+
+```sh
+sudo snap remove gobrew
+```
+
+- if you install gobrew via Go toolchain:
+
+```sh
+go clean -i github.com/abanoubha/gobrew
+```
+
 ### count all packages that use a specific language
 
 ```sh
