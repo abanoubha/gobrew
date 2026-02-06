@@ -20,15 +20,21 @@ I wrote a post about my findings regarding [Go vs Rust usage in Homebrew Core fo
 
 ### install gobrew
 
-- install using Go
-
-```sh
-go install github.com/abanoubha/gobrew
-```
-
 - install via the snap store
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/gobrew)
+
+- install using Go
+
+```sh
+go install github.com/abanoubha/gobrew@latest
+```
+
+- install via piping a script into bash
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/abanoubha/gobrew/main/scripts/install.sh | sh
+```
 
 ### build CLI app from source
 
