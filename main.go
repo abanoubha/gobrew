@@ -83,7 +83,7 @@ func generateSVGChart(fileName, chart string) error {
 	const maxBarWidth = 60
 
 	for _, bar := range bars {
-		barLength := int(float64(bar.Count) / float64(maxCount) * float64(maxBarWidth))
+		barLength := max(0, int(float64(bar.Count)/float64(maxCount)*float64(maxBarWidth)))
 		fmt.Printf("%-10s %s %d\n\n", bar.Language, strings.Repeat("░", barLength), bar.Count)
 	}
 
