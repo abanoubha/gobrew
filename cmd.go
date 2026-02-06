@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -79,6 +80,17 @@ Developer's Website : https://AbanoubHanna.com`, VERSION)
 		count, err := getPackageCount(coreFormulaeFilePath, targetLang)
 		if err != nil {
 			fmt.Println("error:", err)
+			return
+		}
+
+		countI, err := strconv.Atoi(count)
+		if err != nil {
+			fmt.Println("error converting string to int, err:", err)
+			return
+		}
+
+		if countI < 1 {
+			fmt.Printf("There is NO language/package named %s", targetLang)
 			return
 		}
 
