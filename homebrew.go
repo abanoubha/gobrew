@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -89,11 +90,9 @@ func getFormulasFromFile(fileName, langName string) (map[string]string, error) {
 		matched := false
 
 		checkDeps := func(deps []string) {
-			for _, dep := range deps {
-				if isMatch(dep) {
-					matched = true
-					return
-				}
+			if slices.ContainsFunc(deps, isMatch) {
+				matched = true
+				return
 			}
 		}
 
