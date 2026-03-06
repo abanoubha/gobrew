@@ -146,6 +146,11 @@ func generateSVGChart(fileName, chart string) error {
 	var svg strings.Builder
 	fmt.Fprintf(&svg, `<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight)
 
+	languages_vs := formatLanguages(chart)
+
+	// Add title
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text>`, (graphWidth+labelWidth)/2, 20, languages_vs)
+
 	// Draw bars and labels
 	for i, bar := range bars {
 		y := i*(barHeight+barPadding) + barPadding + 20 // Adjusted y position for top padding
@@ -154,11 +159,11 @@ func generateSVGChart(fileName, chart string) error {
 			barWidth = int(float64(bar.Count) / float64(maxCount) * float64(graphWidth))
 		}
 
-		// Draw bar
-		fmt.Fprintf(&svg, `<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight)
-
 		// Draw language label
 		fmt.Fprintf(&svg, `<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%s</text>`, labelWidth-90, y, barHeight/2+5, bar.Language)
+
+		// Draw bar
+		fmt.Fprintf(&svg, `<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight)
 
 		// Draw count label
 		fmt.Fprintf(&svg, `<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%d</text>`, labelWidth+barWidth-38, y, barHeight/2+5, bar.Count)
@@ -172,10 +177,8 @@ func generateSVGChart(fileName, chart string) error {
 	// meta {timestamp}
 	fmt.Fprintf(&svg, `<text x="%d" y="%d" font-family="Arial" font-size="16" style="fill: #666666;">%s</text>`, graphWidth-70, graphHeight-10, time.Now().Format("2006-01-02 03:04 PM"))
 
-	languages_vs := formatLanguages(chart)
-
-	// Add title
-	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text></svg>`, (graphWidth+labelWidth)/2, 20, languages_vs)
+	// closing svg
+	fmt.Fprintf(&svg, `</svg>`)
 
 	filename2save := strings.ReplaceAll(chart, ",", "-") + time.Now().Format("_2006-01-02_15-04-05.svg")
 	if err := saveToFile(filename2save, svg.String()); err != nil {
