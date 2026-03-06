@@ -141,7 +141,7 @@ func generateSVGChart(fileName, chart string) error {
 	barPadding := 10
 	graphWidth := 600
 	labelWidth := 100
-	graphHeight := len(bars)*(barHeight+barPadding) + 50 // Add some padding at the top and bottom
+	graphHeight := len(bars)*(barHeight+barPadding) + 90 // Add some padding at the top and bottom
 
 	var svg strings.Builder
 	fmt.Fprintf(&svg, `<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" style="background-color: #f0f0f0;">`, graphWidth+labelWidth, graphHeight)
@@ -165,7 +165,14 @@ func generateSVGChart(fileName, chart string) error {
 	}
 
 	// Add X-axis label
-	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="16">Package Count</text>`, labelWidth+graphWidth/2, graphHeight-10)
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="16">Package Count</text>`, labelWidth+graphWidth/2, graphHeight-40)
+
+	// meta {url}
+	// <text x="10" y="160" font-family="Arial" font-size="16" style="fill: #666666;">github.com/abanoubha/gobrew</text>
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" font-family="Arial" font-size="16" style="fill: #666666;">github.com/abanoubha/gobrew</text>`, 10, graphHeight-10)
+	// meta {timestamp}
+	// <text x="530" y="160" font-family="Arial" font-size="16" style="fill: #666666;">2026-03-06 10:26 AM</text>
+	fmt.Fprintf(&svg, `<text x="%d" y="%d" font-family="Arial" font-size="16" style="fill: #666666;">%s</text>`, graphWidth-70, graphHeight-10, time.Now().Format("2006-01-02 03:04 PM"))
 
 	languages_vs := formatLanguages(chart)
 
