@@ -33,3 +33,5 @@ parts:
     build-snaps: [go/latest/stable]
     source: https://github.com/abanoubha/gobrew
     source-type: git
+    build-environment:
+      - GOTOOLCHAIN: local
