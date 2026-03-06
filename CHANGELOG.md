@@ -61,6 +61,18 @@ This page shows the roadmap with versioned tasks along with releases.
 
 - bug fixes and refactoring
 
+## 260306
+
+- refactor code for maintainability
+  - use stdlib func instead of looping (refactored by 'go fix')
+  - order lines of SVG to be semantically correct for easier understand
+  - upgrade Go version
+  - remove obsolete comments
+- better user experience
+  - separate flags for **ascii chart** (`-c` or `--chart`) and **svg chart** (`-g` or `--svg`)
+  - capitalize initials of languages' names in the title on SVG and in items' labels
+  - add github url and timestamp in the bottom of the generated
+
 ## next
 
 - get statistics from APT package manager too
