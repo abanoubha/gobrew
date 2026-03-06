@@ -89,7 +89,7 @@ for PLATFORM in $PLATFORMS; do
 
     echo "==> Building for GOOS=$GOOS GOARCH=$GOARCH -> $OUTPUT_NAME"
 
-    GOOS="$GOOS" GOARCH="$GOARCH" go build -o "$OUT_DIR/$OUTPUT_NAME" "$PACKAGE_PATH"
+    GOOS="$GOOS" GOARCH="$GOARCH" go build -trimpath -ldflags="-s -w -buildid=" -o "$OUT_DIR/$OUTPUT_NAME" "$PACKAGE_PATH"
 done
 
 echo "Done."
