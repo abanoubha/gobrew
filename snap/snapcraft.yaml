@@ -1,5 +1,5 @@
 name: gobrew
-version: 260206
+version: 260306
 summary: Count all packages built with a specific language
 description: |
   Count all packages built with a specific programming language and distributed by Homebrew.

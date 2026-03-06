@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const VERSION = "260206"
+const VERSION = "260306"
 
 const coreFormulasFile = "core_formulas.json"
 
