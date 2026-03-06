@@ -160,7 +160,7 @@ func generateSVGChart(fileName, chart string) error {
 		}
 
 		// Draw language label
-		fmt.Fprintf(&svg, `<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%s</text>`, labelWidth-90, y, barHeight/2+5, bar.Language)
+		fmt.Fprintf(&svg, `<text x="%d" y="%d" dy="%d" font-family="Arial" font-size="14">%s</text>`, labelWidth-90, y, barHeight/2+5, strings.ToUpper(bar.Language[:1])+bar.Language[1:])
 
 		// Draw bar
 		fmt.Fprintf(&svg, `<rect x="%d" y="%d" width="%d" height="%d" fill="#4CAF50"/>`, labelWidth-40, y, barWidth, barHeight)
