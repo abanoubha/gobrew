@@ -33,7 +33,7 @@ func main() {
 	// }
 }
 
-func generateSVGChart(fileName, chart string) error {
+func generateASCIIChart(fileName, chart string) error {
 
 	langStats := make(map[string]int)
 
@@ -86,6 +86,55 @@ func generateSVGChart(fileName, chart string) error {
 		barLength := max(0, int(float64(bar.Count)/float64(maxCount)*float64(maxBarWidth)))
 		fmt.Printf("%-10s %s %d\n\n", bar.Language, strings.Repeat("░", barLength), bar.Count)
 	}
+
+	return nil
+}
+
+func generateSVGChart(fileName, chart string) error {
+
+	langStats := make(map[string]int)
+
+	langs := strings.SplitSeq(chart, ",")
+
+	if err := ensureFileExists(fileName); err != nil {
+		return err
+	}
+
+	for lang := range langs {
+		lang = strings.TrimSpace(lang)
+		if len(lang) > 30 {
+			fmt.Printf("The language is more than 30 characters long! which is weird! : language=%v\n", lang)
+			break
+		}
+
+		formulasList, err := getFormulasFromFile(fileName, lang)
+		if err != nil {
+			fmt.Println("Error getting formulas list: ", err)
+			return err
+		}
+
+		langStats[lang] = len(formulasList)
+	}
+
+	// Prepare data for the chart
+	type bar struct {
+		Language string
+		Count    int
+	}
+	var bars []bar
+	maxCount := 0
+
+	for lang, count := range langStats {
+		bars = append(bars, bar{lang, count})
+		if count > maxCount {
+			maxCount = count
+		}
+	}
+
+	// Sort languages by count (descending) for better visualization
+	sort.Slice(bars, func(i, j int) bool {
+		return bars[i].Count > bars[j].Count
+	})
 
 	// Generate SVG chart
 	barHeight := 30

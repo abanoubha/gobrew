@@ -14,6 +14,7 @@ var (
 	flagLang       string
 	flagDependants string
 	flagChart      string
+	flagSVG        string
 	flagReport     string
 )
 
@@ -43,7 +44,14 @@ Developer's Website : https://AbanoubHanna.com`, VERSION)
 		}
 
 		if flagChart != "" {
-			if err := generateSVGChart(coreFormulaeFilePath, flagChart); err != nil {
+			if err := generateASCIIChart(coreFormulaeFilePath, flagChart); err != nil {
+				fmt.Println("error:", err)
+			}
+			return
+		}
+
+		if flagSVG != "" {
+			if err := generateSVGChart(coreFormulaeFilePath, flagSVG); err != nil {
 				fmt.Println("error:", err)
 			}
 			return
@@ -121,6 +129,7 @@ func init() {
 
 	rootCmd.Flags().StringVarP(&flagLang, "lang", "l", "", "get count for specific language/build-system/library")
 	rootCmd.Flags().StringVarP(&flagDependants, "dependants", "d", "", "show all dependants of a certain language/build-system/library")
-	rootCmd.Flags().StringVarP(&flagChart, "chart", "c", "", "create an SVG chart for statistics of specified languages (comma separated langs)")
+	rootCmd.Flags().StringVarP(&flagChart, "chart", "c", "", "create an ASCII chart of statistics of specified languages (comma separated langs)")
+	rootCmd.Flags().StringVarP(&flagSVG, "svg", "g", "", "generate an SVG chart for statistics of specified languages (comma separated langs)")
 	rootCmd.Flags().StringVarP(&flagReport, "report", "r", "go", "show detailed report of usage statistics of the specified language")
 }
