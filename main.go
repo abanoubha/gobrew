@@ -167,7 +167,7 @@ func generateSVGChart(fileName, chart string) error {
 	// Add X-axis label
 	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="16">Package Count</text>`, labelWidth+graphWidth/2, graphHeight-10)
 
-	languages_vs := strings.ReplaceAll(chart, ",", " vs ")
+	languages_vs := formatLanguages(chart)
 
 	// Add title
 	fmt.Fprintf(&svg, `<text x="%d" y="%d" text-anchor="middle" font-family="Arial" font-size="20">%s Statistics</text></svg>`, (graphWidth+labelWidth)/2, 20, languages_vs)

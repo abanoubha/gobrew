@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strings"
 	"time"
 )
 
@@ -30,4 +31,15 @@ func isFileOld(filePath string) bool {
 	sevenDaysAgo := time.Now().AddDate(0, 0, -7)
 
 	return fileInfo.ModTime().Before(sevenDaysAgo)
+}
+
+func formatLanguages(s string) string {
+	parts := strings.Split(s, ",")
+	for i, p := range parts {
+		if len(p) == 0 {
+			continue
+		}
+		parts[i] = strings.ToUpper(p[:1]) + p[1:]
+	}
+	return strings.Join(parts, " vs ")
 }
