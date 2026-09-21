@@ -17,7 +17,6 @@ const VERSION = "260306"
 
 const coreFormulasFile = "core_formulas.json"
 
-// var coreFormulaeFilePath = filepath.Join(os.TempDir(), coreFormulasFile)
 var cachePath = filepath.Join(os.Getenv("HOME"), ".gobrew")
 var coreFormulaeFilePath = filepath.Join(cachePath, coreFormulasFile)
 
@@ -25,12 +24,6 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}
-
-	// for _, f := range formulas_list {
-	// 	if fileDoNotExist("./formulas/" + f + ".json") {
-	// 		getFormulaInfo(f)
-	// 	}
-	// }
 }
 
 func generateASCIIChart(fileName, chart string) error {
@@ -365,52 +358,6 @@ func getAllStatistics(fileName string) error {
 
 	return nil
 }
-
-// func getFormulaInfo(f string) {
-// 	filePath := "./formulas/" + f + ".json"
-// 	url := "https://formulae.brew.sh/api/formula/" + f + ".json"
-
-// 	resp, err := http.Get(url)
-
-// 	if err != nil {
-// 		fmt.Println("Error: can not reach API endpoint", err.Error())
-// 		return
-// 	}
-
-// 	defer resp.Body.Close()
-
-// 	outFile, err := os.Create(filePath)
-
-// 	if err != nil {
-// 		fmt.Println("Error creating file: ", err.Error())
-// 		return
-// 	}
-
-// 	defer outFile.Close()
-
-// 	_, err = io.Copy(outFile, resp.Body)
-
-// 	if err != nil {
-// 		fmt.Println("Error writing to a file: ", err.Error())
-// 		return
-// 	}
-
-// 	fmt.Println("successfully written JSON data into ", filePath)
-// }
-
-// func isFileFound(fileName string) bool {
-// 	_, err := os.Open(fileName)
-// 	if err != nil {
-// 		if os.IsNotExist(err) {
-// 			fmt.Println("The file", fileName, "does not exist")
-// 			return false
-// 		} else {
-// 			fmt.Println("Error opening the file ", fileName, ": ", err.Error())
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
 
 func getCoreFormulas(fileName string) error {
 	resp, err := http.Get("https://formulae.brew.sh/api/formula.json")
