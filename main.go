@@ -354,7 +354,7 @@ func getAllStatistics(fileName string) error {
 
 	var result strings.Builder
 	for _, pair := range kvPairs {
-		result.WriteString(fmt.Sprintf("%v: %v\n", pair.Key, pair.Val))
+		fmt.Fprintf(&result, "%v: %v\n", pair.Key, pair.Val)
 	}
 
 	fmt.Println(result.String())
