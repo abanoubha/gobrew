@@ -321,7 +321,7 @@ func getAllStatistics(fileName string) error {
 		return err
 	}
 
-	deps := map[string]int{}
+	deps := make(map[string]int)
 	countDeps := func(list []string) {
 		for _, dep := range list {
 			deps[dep]++
