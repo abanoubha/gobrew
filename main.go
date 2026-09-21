@@ -352,14 +352,14 @@ func getAllStatistics(fileName string) error {
 		return kvPairs[i].Val > kvPairs[j].Val
 	})
 
-	var result string
+	var result strings.Builder
 	for _, pair := range kvPairs {
-		result += fmt.Sprintf("%v: %v\n", pair.Key, pair.Val)
+		result.WriteString(fmt.Sprintf("%v: %v\n", pair.Key, pair.Val))
 	}
 
-	fmt.Println(result)
+	fmt.Println(result.String())
 
-	if err := saveToFile(statCache, result); err != nil {
+	if err := saveToFile(statCache, result.String()); err != nil {
 		fmt.Println("error caching: ", err)
 	}
 
