@@ -425,11 +425,8 @@ func getCoreFormulas(fileName string) error {
 	//	return
 	//}
 
-	if _, err := os.Stat(cachePath); os.IsNotExist(err) {
-		err = os.Mkdir(cachePath, 0755)
-		if err != nil {
-			return fmt.Errorf("error creating '%s' directory: %w", cachePath, err)
-		}
+	if err := os.MkdirAll(cachePath, 0755); err != nil {
+		return fmt.Errorf("error creating '%s' directory: %w", cachePath, err)
 	}
 
 	outFile, err := os.Create(fileName) //os.CreateTemp("", fileName)
