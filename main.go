@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -17,10 +18,17 @@ const VERSION = "260922"
 
 const coreFormulasFile = "core_formulas.json"
 
-var cachePath = filepath.Join(os.Getenv("HOME"), ".gobrew")
-var coreFormulaeFilePath = filepath.Join(cachePath, coreFormulasFile)
+var coreFormulaeFilePath string
+var cachePath string
 
 func main() {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalln("error occurred. Error: ", err.Error())
+	}
+	cachePath = filepath.Join(homeDir, ".gobrew")
+	coreFormulaeFilePath = filepath.Join(cachePath, coreFormulasFile)
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}
