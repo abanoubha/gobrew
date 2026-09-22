@@ -73,6 +73,10 @@ This page shows the roadmap with versioned tasks along with releases.
   - capitalize initials of languages' names in the title on SVG and in items' labels
   - add github url and timestamp in the bottom of the generated
 
+## 260922
+
+- refactor some code and micro-optimizations
+
 ## next
 
 - get statistics from APT package manager too
