@@ -80,36 +80,28 @@ func getFormulasFromFile(fileName, langName string) (map[string]string, error) {
 	}
 
 	allFormulas := map[string]string{}
-	langAt := langName + "@"
-
-	isMatch := func(dep string) bool {
-		return dep == langName || strings.HasPrefix(dep, langAt)
-	}
 
 	for _, formula := range formulas {
+
 		matched := false
 
-		checkDeps := func(deps []string) {
-			if slices.ContainsFunc(deps, isMatch) {
-				matched = true
-				return
-			}
+		// TODO: +Requirements
+		depsToCheck := [][]string{
+			formula.BuildDependencies,
+			formula.Dependencies,
+			formula.TestDependencies,
+			formula.RecommendedDependencies,
+			formula.OptionalDependencies,
 		}
 
-		checkDeps(formula.BuildDependencies)
-		if !matched {
-			checkDeps(formula.Dependencies)
+		for _, deps := range depsToCheck {
+			if slices.ContainsFunc(deps, func(d string) bool {
+				return d == langName || strings.HasPrefix(d, langName+"@")
+			}) {
+				matched = true
+				break
+			}
 		}
-		if !matched {
-			checkDeps(formula.TestDependencies)
-		}
-		if !matched {
-			checkDeps(formula.RecommendedDependencies)
-		}
-		if !matched {
-			checkDeps(formula.OptionalDependencies)
-		}
-		// TODO: Requirements
 
 		if matched {
 			allFormulas[formula.Name] = formula.Desc
